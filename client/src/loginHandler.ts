@@ -1,7 +1,7 @@
 import { post } from './httpService';
 import { LOGIN_URL } from './urlHelper';
 
-export default function loginHandler(event: Event): void {
+export default function loginHandler(): void {
     const loginInput: HTMLInputElement = <HTMLInputElement>document.getElementById('loginInput');
     const passwordInput: HTMLInputElement = <HTMLInputElement>document.getElementById('loginInput');
 
@@ -11,7 +11,6 @@ export default function loginHandler(event: Event): void {
     const body = { login, password };
 
     post(LOGIN_URL, body).then(({ data }) => {
-      debugger;
       alert(`Logged: ${ data.success }`);
     });
 }
