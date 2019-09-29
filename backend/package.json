@@ -1,0 +1,28 @@
+{
+  "name": "eco-fe",
+  "version": "1.0.0",
+  "description": "``` npm install npm start ```",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./server/app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ann-maier/ECO-FE.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ann-maier/ECO-FE/issues"
+  },
+  "homepage": "https://github.com/ann-maier/ECO-FE#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql": "^2.17.1"
+  },
+  "devDependencies": {
+    "body-parser": "^1.19.0",
+    "nodemon": "^1.19.3"
+  }
+}
