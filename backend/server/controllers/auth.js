@@ -3,7 +3,7 @@ const pool = require('../../db-config/mysql-config');
 const login = (req, res) => {
   const { login, password } = req.body;
 
-  const query = `SELECT * FROM USERS WHERE login = '${ login }' AND password = '${ password }';`;
+  const query = `SELECT * FROM user WHERE user_name = '${ login }' AND password = '${ password }';`;
 
   return pool.query(query, (error, rows) => {
     if (error) {
