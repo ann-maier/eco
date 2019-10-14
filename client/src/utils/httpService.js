@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-async function post(url: string, body: any): Promise<any> {
+async function post(url, body) {
   return axios.post(url, body);
 }
 

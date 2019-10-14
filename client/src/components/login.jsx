@@ -1,9 +1,10 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
+
 import { Auth } from './auth';
 import { VerticallyCenteredModal } from './modal';
 
-export const Login: React.FunctionComponent = () => {
+export const Login = () => {
   const [modalShow, setModalShow] = React.useState(false);
 
   return (

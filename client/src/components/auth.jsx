@@ -1,17 +1,17 @@
 import React from 'react';
+import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 
 import { post } from '../utils/httpService';
 import { LOGIN_URL } from '../utils/constants';
-import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 
-export const Auth = (props: any) => {
+export const Auth = (props) => {
   const [login, setLogin] = React.useState('');
   const [password, setPassword] = React.useState('');
 
   const loginUser = () => {
     post(LOGIN_URL, { login, password }).then(({ data }) => {
       alert(`Logged: ${data.success}`);
-      if (!!data.success) {
+      if (data.success) {
         props.onHide();
       }
     });
@@ -28,7 +28,7 @@ export const Auth = (props: any) => {
                 type="input"
                 placeholder="Enter username"
                 value={login}
-                onChange={(e: any) => setLogin(e.target.value)}
+                onChange={(e) => setLogin(e.target.value)}
               />
             </Form.Group>
 
@@ -38,7 +38,7 @@ export const Auth = (props: any) => {
                 type="password"
                 placeholder="Password"
                 value={password}
-                onChange={(e: any) => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </Form.Group>
             <Button variant="primary" onClick={loginUser}>

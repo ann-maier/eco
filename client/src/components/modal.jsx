@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Modal } from 'react-bootstrap';
 
-export const VerticallyCenteredModal = (props: any) => (
+export const VerticallyCenteredModal = (props) => (
   <Modal
     {...props}
     size="lg"
