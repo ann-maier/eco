@@ -8,7 +8,6 @@ export const Auth = (props: any) => {
   const [login, setLogin] = React.useState('');
   const [password, setPassword] = React.useState('');
 
-  debugger;
   const loginUser = () => {
     post(LOGIN_URL, { login, password }).then(({ data }) => {
       alert(`Logged: ${data.success}`);
