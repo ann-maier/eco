@@ -4,49 +4,77 @@ import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { post } from '../utils/httpService';
 import { LOGIN_URL } from '../utils/constants';
 
-export const Auth = (props) => {
-  const [login, setLogin] = React.useState('');
-  const [password, setPassword] = React.useState('');
+export class Auth extends React.Component {
+  constructor(props) {
+    super(props);
 
-  const loginUser = () => {
-    post(LOGIN_URL, { login, password }).then(({ data }) => {
+    this.state = {
+      login: '',
+      password: '',
+      toHome: false
+    };
+
+    this.loginUser = this.loginUser.bind(this);
+    this.setLogin = this.setLogin.bind(this);
+    this.setPassword = this.setPassword.bind(this);
+  }
+
+  setLogin(e) {
+    this.setState({ login: e.target.value });
+  }
+
+  setPassword(e) {
+    this.setState({ password: e.target.value });
+  }
+
+  loginUser() {
+    post(LOGIN_URL, {
+      login: this.state.login,
+      password: this.state.password
+    }).then(({ data }) => {
       alert(`Logged: ${data.success}`);
       if (data.success) {
-        props.onHide();
+        this.props.onHide();
+        sessionStorage.setItem('user', this.state.login);
+        // this.setState({})
+        this.props.history.push('/');
+        // window.location.reload(false);
       }
     });
-  };
+  }
 
-  return (
-    <Container>
-      <Row className="justify-content-center">
-        <Col xs={6}>
-          <Form>
-            <Form.Group controlId="formUsername">
-              <Form.Label>Username</Form.Label>
-              <Form.Control
-                type="input"
-                placeholder="Enter username"
-                value={login}
-                onChange={(e) => setLogin(e.target.value)}
-              />
-            </Form.Group>
+  render() {
+    return (
+      <Container>
+        <Row className='justify-content-center'>
+          <Col xs={6}>
+            <Form>
+              <Form.Group controlId='formUsername'>
+                <Form.Label>Username</Form.Label>
+                <Form.Control
+                  type='input'
+                  placeholder='Enter username'
+                  value={this.login}
+                  onChange={this.setLogin}
+                />
+              </Form.Group>
 
-            <Form.Group controlId="formBasicPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Form.Group>
-            <Button variant="primary" onClick={loginUser}>
-              Login
-            </Button>
-          </Form>
-        </Col>
-      </Row>
-    </Container>
-  );
-};
+              <Form.Group controlId='formBasicPassword'>
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type='password'
+                  placeholder='Password'
+                  value={this.password}
+                  onChange={this.setPassword}
+                />
+              </Form.Group>
+              <Button variant='primary' onClick={this.loginUser}>
+                Login
+              </Button>
+            </Form>
+          </Col>
+        </Row>
+      </Container>
+    );
+  }
+}
