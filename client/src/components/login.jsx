@@ -16,7 +16,7 @@ export const Login = (props) => {
         show={modalShow}
         onHide={() => setModalShow(false)}
       >
-        <Auth onHide={() => setModalShow(false)} history={props.history} />
+        <Auth onHide={() => setModalShow(false)} setUser={props.setUser} />
       </VerticallyCenteredModal>
     </React.Fragment>
   );

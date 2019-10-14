@@ -10,8 +10,7 @@ export class Auth extends React.Component {
 
     this.state = {
       login: '',
-      password: '',
-      toHome: false
+      password: ''
     };
 
     this.loginUser = this.loginUser.bind(this);
@@ -35,10 +34,8 @@ export class Auth extends React.Component {
       alert(`Logged: ${data.success}`);
       if (data.success) {
         this.props.onHide();
+        this.props.setUser(this.state.login);
         sessionStorage.setItem('user', this.state.login);
-        // this.setState({})
-        this.props.history.push('/');
-        // window.location.reload(false);
       }
     });
   }
