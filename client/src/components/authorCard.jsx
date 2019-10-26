@@ -1,11 +1,11 @@
-import { Card } from "react-bootstrap";
-import author from "../images/author.png";
-import React from "react";
+import { Card } from 'react-bootstrap';
+import author from '../images/author.png';
+import React from 'react';
 
 export const AuthorCard = () => {
   return (
     <Card>
-      <Card.Img variant="top" src={author} />
+      <Card.Img variant='top' src={author} />
       <Card.Body>
         <Card.Title>David Guetta</Card.Title>
         <Card.Text>
