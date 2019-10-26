@@ -20,7 +20,7 @@ export const Auth = (props) => {
         sessionStorage.setItem('user', login);
       }
     });
-  }
+  };
 
   return (
     <Container>
@@ -54,5 +54,4 @@ export const Auth = (props) => {
       </Row>
     </Container>
   );
-
-}
+};
