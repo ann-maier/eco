@@ -9,44 +9,50 @@ export const Auth = (props) => {
   const [password, setPassword] = React.useState('');
 
   const loginUser = () => {
-    post(LOGIN_URL, { login, password }).then(({ data }) => {
+    post(LOGIN_URL, {
+      login: login,
+      password: password
+    }).then(({ data }) => {
       alert(`Logged: ${data.success}`);
       if (data.success) {
         props.onHide();
+        props.setUser(login);
+        sessionStorage.setItem('user', login);
       }
     });
-  };
+  }
 
   return (
     <Container>
-      <Row className="justify-content-center">
+      <Row className='justify-content-center'>
         <Col xs={6}>
           <Form>
-            <Form.Group controlId="formUsername">
+            <Form.Group controlId='formUsername'>
               <Form.Label>Username</Form.Label>
               <Form.Control
-                type="input"
-                placeholder="Enter username"
+                type='input'
+                placeholder='Enter username'
                 value={login}
                 onChange={(e) => setLogin(e.target.value)}
               />
             </Form.Group>
 
-            <Form.Group controlId="formBasicPassword">
+            <Form.Group controlId='formBasicPassword'>
               <Form.Label>Password</Form.Label>
               <Form.Control
-                type="password"
-                placeholder="Password"
+                type='password'
+                placeholder='Password'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </Form.Group>
-            <Button variant="primary" onClick={loginUser}>
+            <Button variant='primary' onClick={loginUser}>
               Login
-            </Button>
+              </Button>
           </Form>
         </Col>
       </Row>
     </Container>
   );
-};
+
+}
