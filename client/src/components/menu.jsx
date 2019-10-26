@@ -13,7 +13,7 @@ export const MenuView = () => {
   }, []);
 
   return (
-    <Nav className='justify-content-between container'>
+    <Nav className='justify-content-between container mt-2 mb-2'>
       <Nav.Item className='d-flex align-items-center'>
         <Nav.Item>
           <Link to='/'>Home</Link>
@@ -28,9 +28,7 @@ export const MenuView = () => {
         {user ? (
           <h1>Welcome, {user}</h1>
         ) : (
-          <li>
-            <Login setUser={user => setUser(user)} />
-          </li>
+          <Login setUser={user => setUser(user)} />
         )}
       </Nav.Item>
     </Nav>
