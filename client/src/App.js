@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './App.css';
 import { MenuView } from './components/menu';
-import { CarouselView } from './components/carousel';
+import { Home } from './components/home';
 import { Map } from './components/map';
 
 export default class App extends React.Component {
@@ -15,7 +15,7 @@ export default class App extends React.Component {
         <div className="App">
           <MenuView />
           <Switch>
-            <Route exact path="/" component={CarouselView} />
+            <Route exact path="/" component={Home} />
             <Route path="/map" component={Map} />
           </Switch>
         </div>
