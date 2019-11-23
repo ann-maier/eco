@@ -27,7 +27,15 @@ const getPolygons = (req, res) => {
   `;
 
   return pool.query(queryGetPoligons, (error, poligons) => {
+    if (error) {
+      throw error;
+    }
+
     return pool.query(queryGetPoligonPoints, (error, poligonPoints) => {
+      if (error) {
+        throw error;
+      }
+
       const mappedPoligons = poligons.map((poligon) => {
         return {
           bruch_color_g: poligon.bruch_color_g,
