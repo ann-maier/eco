@@ -1,7 +1,9 @@
 const pool = require('../../db-config/mysql-config');
 
 const mapPolygonPoints = (poligonPoints, idOfPoligon) => {
-  return poligonPoints.filter(({ Id_of_poligon }) => Id_of_poligon === idOfPoligon).map(({ latitude, longitude }) => ({ latitude, longitude }));
+  return poligonPoints
+    .filter(({ Id_of_poligon }) => Id_of_poligon === idOfPoligon)
+    .map(({ latitude, longitude }) => ({ latitude, longitude }));
 };
 
 const getPolygons = (req, res) => {
