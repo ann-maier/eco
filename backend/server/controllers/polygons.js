@@ -3,7 +3,7 @@ const pool = require('../../db-config/mysql-config');
 const mapPolygonPoints = (polygonPoints, idOfPolygon) => {
   return polygonPoints
     .filter(({ Id_of_poligon }) => Id_of_poligon === idOfPolygon)
-    .map(({ latitude, longitude }) => ({ latitude, longitude }));
+    .map(({ latitude, longitude }) => [longitude, latitude]);
 };
 
 const getPolygons = (req, res) => {
@@ -46,30 +46,33 @@ const getPolygons = (req, res) => {
         throw error;
       }
 
-      const mappedPolygons = polygons.map((polygon) => {
-        const mappedPolygonPoints = mapPolygonPoints(polygonPoints, polygon.id_of_poligon);
+      const mappedPolygons = polygons.map(polygon => {
+        const mappedPolygonPoints = mapPolygonPoints(
+          polygonPoints,
+          polygon.id_of_poligon
+        );
 
         return {
-          id_of_poligon: polygon.id_of_poligon,
-          bruch_color_g: polygon.bruch_color_g,
-          brush_alfa: polygon.brush_alfa,
-          brush_color_b: polygon.brush_color_b,
-          brush_color_r: polygon.brush_color_r,
-          expert_name: polygon.expert_name,
-          line_alfa: polygon.line_alfa,
-          line_collor_r: polygon.line_collor_r,
-          line_color_b: polygon.line_color_b,
-          line_color_g: polygon.line_color_g,
-          line_thickness: polygon.line_thickness,
+          poligonId: polygon.id_of_poligon,
+          brushAlfa: polygon.brush_alfa,
+          brushColorR: polygon.brush_color_r,
+          brushColorG: polygon.bruch_color_g,
+          brushColorB: polygon.brush_color_b,
+          expertName: polygon.expert_name,
+          lineAlfa: polygon.line_alfa,
+          lineCollorR: polygon.line_collor_r,
+          lineColorB: polygon.line_color_b,
+          lineColorG: polygon.line_color_g,
+          lineThickness: polygon.line_thickness,
           name: polygon.name,
           polygonPoints: mappedPolygonPoints,
-        }
+        };
       });
       return res.send(mappedPolygons);
-    })
+    });
   });
 };
 
 module.exports = {
-  getPolygons
+  getPolygons,
 };
