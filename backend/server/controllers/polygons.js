@@ -1,13 +1,13 @@
 const pool = require('../../db-config/mysql-config');
 
-const mapPolygonPoints = (poligonPoints, idOfPoligon) => {
-  return poligonPoints
-    .filter(({ Id_of_poligon }) => Id_of_poligon === idOfPoligon)
+const mapPolygonPoints = (polygonPoints, idOfPolygon) => {
+  return polygonPoints
+    .filter(({ Id_of_poligon }) => Id_of_poligon === idOfPolygon)
     .map(({ latitude, longitude }) => ({ latitude, longitude }));
 };
 
 const getPolygons = (req, res) => {
-  const queryGetPoligons = `
+  const queryGetPolygons = `
     SELECT 
       poligon.id_of_poligon,
       poligon.brush_color_r,
@@ -25,7 +25,7 @@ const getPolygons = (req, res) => {
     INNER JOIN experts.expert ON poligon.id_of_expert = expert.id_of_expert;
   `;
 
-  let queryGetPoligonPoints = `
+  let queryGetPolygonPoints = `
     SELECT
       point_poligon.longitude,
       point_poligon.latitude,
@@ -36,36 +36,36 @@ const getPolygons = (req, res) => {
       point_poligon.order ASC;
   `;
 
-  return pool.query(queryGetPoligons, (error, poligons) => {
+  return pool.query(queryGetPolygons, (error, polygons) => {
     if (error) {
       throw error;
     }
 
-    return pool.query(queryGetPoligonPoints, (error, poligonPoints) => {
+    return pool.query(queryGetPolygonPoints, (error, polygonPoints) => {
       if (error) {
         throw error;
       }
 
-      const mappedPoligons = poligons.map((poligon) => {
-        const mappedPolygonPoints = mapPolygonPoints(poligonPoints, poligon.id_of_poligon);
+      const mappedPolygons = polygons.map((polygon) => {
+        const mappedPolygonPoints = mapPolygonPoints(polygonPoints, polygon.id_of_poligon);
 
         return {
-          id_of_poligon: poligon.id_of_poligon,
-          bruch_color_g: poligon.bruch_color_g,
-          brush_alfa: poligon.brush_alfa,
-          brush_color_b: poligon.brush_color_b,
-          brush_color_r: poligon.brush_color_r,
-          expert_name: poligon.expert_name,
-          line_alfa: poligon.line_alfa,
-          line_collor_r: poligon.line_collor_r,
-          line_color_b: poligon.line_color_b,
-          line_color_g: poligon.line_color_g,
-          line_thickness: poligon.line_thickness,
-          name: poligon.name,
+          id_of_poligon: polygon.id_of_poligon,
+          bruch_color_g: polygon.bruch_color_g,
+          brush_alfa: polygon.brush_alfa,
+          brush_color_b: polygon.brush_color_b,
+          brush_color_r: polygon.brush_color_r,
+          expert_name: polygon.expert_name,
+          line_alfa: polygon.line_alfa,
+          line_collor_r: polygon.line_collor_r,
+          line_color_b: polygon.line_color_b,
+          line_color_g: polygon.line_color_g,
+          line_thickness: polygon.line_thickness,
+          name: polygon.name,
           polygonPoints: mappedPolygonPoints,
         }
       });
-      return res.send(mappedPoligons);
+      return res.send(mappedPolygons);
     })
   });
 };
