@@ -1,8 +1,14 @@
 const pool = require('../../db-config/mysql-config');
 
+const mapPolygonPoints = (poligonPoints, idOfPoligon) => {
+  return poligonPoints.filter(({ Id_of_poligon }) => Id_of_poligon === idOfPoligon).map(({ latitude, longitude }) => ({ latitude, longitude }));
+};
+
 const getPolygons = (req, res) => {
   const queryGetPoligons = `
-    SELECT poligon.id_of_poligon, poligon.brush_color_r,
+    SELECT 
+      poligon.id_of_poligon,
+      poligon.brush_color_r,
       poligon.bruch_color_g,
       poligon.brush_color_b,
       poligon.brush_alfa,
@@ -19,7 +25,9 @@ const getPolygons = (req, res) => {
 
   let queryGetPoligonPoints = `
     SELECT
-      point_poligon.longitude, point_poligon.latitude, point_poligon.Id_of_poligon
+      point_poligon.longitude,
+      point_poligon.latitude,
+      point_poligon.Id_of_poligon
     FROM experts.point_poligon
     ORDER BY
       point_poligon.Id_of_poligon ASC,
@@ -37,7 +45,10 @@ const getPolygons = (req, res) => {
       }
 
       const mappedPoligons = poligons.map((poligon) => {
+        const mappedPolygonPoints = mapPolygonPoints(poligonPoints, poligon.id_of_poligon);
+
         return {
+          id_of_poligon: poligon.id_of_poligon,
           bruch_color_g: poligon.bruch_color_g,
           brush_alfa: poligon.brush_alfa,
           brush_color_b: poligon.brush_color_b,
@@ -49,7 +60,7 @@ const getPolygons = (req, res) => {
           line_color_g: poligon.line_color_g,
           line_thickness: poligon.line_thickness,
           name: poligon.name,
-          polygonPoints: poligonPoints.filter(({ Id_of_poligon }) => Id_of_poligon === poligon.id_of_poligon).map(({ latitude, longitude }) => ({ latitude, longitude })),
+          polygonPoints: mappedPolygonPoints,
         }
       });
       return res.send(mappedPoligons);
