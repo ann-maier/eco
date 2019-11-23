@@ -1,8 +1,7 @@
 const pool = require('../../db-config/mysql-config');
 
-function getPolygons(req, res) {
-
-  let queryGetPoligons = `
+const getPolygons = (req, res) => {
+  const queryGetPoligons = `
     SELECT poligon.id_of_poligon, poligon.brush_color_r,
       poligon.bruch_color_g,
       poligon.brush_color_b,
@@ -42,13 +41,13 @@ function getPolygons(req, res) {
           line_color_g: poligon.line_color_g,
           line_thickness: poligon.line_thickness,
           name: poligon.name,
-          points: poligonPoints.filter(({ Id_of_poligon }) => Id_of_poligon === poligon.id_of_poligon).map(({ latitude, longitude }) => ({ latitude, longitude })),
+          polygonPoints: poligonPoints.filter(({ Id_of_poligon }) => Id_of_poligon === poligon.id_of_poligon).map(({ latitude, longitude }) => ({ latitude, longitude })),
         }
       });
       return res.send(mappedPoligons);
     })
   });
-}
+};
 
 module.exports = {
   getPolygons
