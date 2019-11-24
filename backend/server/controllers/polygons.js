@@ -36,16 +36,32 @@ const getPolygons = (req, res) => {
       point_poligon.order ASC;
   `;
 
-  return pool.query(queryGetPolygons, (error, polygons) => {
-    if (error) {
-      throw error;
-    }
 
-    return pool.query(queryGetPolygonPoints, (error, polygonPoints) => {
+  const getPolygonsPromise = new Promise((resolve, reject) => {
+    pool.query(queryGetPolygons, (error, polygons) => {
       if (error) {
-        throw error;
+        reject(error);
       }
 
+      return resolve(polygons);
+    });
+  });
+
+  const queryGetPolygonPointsPromise = new Promise((resolve, reject) => {
+    pool.query(queryGetPolygonPoints, (error, polygonPoints) => {
+      if (error) {
+        reject(error);
+      }
+
+      return resolve(polygonPoints);
+    });
+  });
+
+  return Promise.all([
+    getPolygonsPromise,
+    queryGetPolygonPointsPromise
+  ]).then(
+    ([polygons, polygonPoints]) => {
       const mappedPolygons = polygons.map(polygon => {
         const mappedPolygonPoints = mapPolygonPoints(
           polygonPoints,
@@ -68,9 +84,10 @@ const getPolygons = (req, res) => {
           polygonPoints: mappedPolygonPoints,
         };
       });
+
       return res.send(mappedPolygons);
-    });
-  });
+    })
+    .catch(console.log);
 };
 
 module.exports = {
