@@ -1,23 +1,30 @@
 import React, { useEffect, useState } from 'react'
-import { Map as LeafletMap, TileLayer, Popup, Polygon } from 'react-leaflet';
+import { Map as LeafletMap, TileLayer } from 'react-leaflet';
 
 import { get } from '../utils/httpService';
-import { POLYGONS_URL, MAP_CENTER_COORDS, POINTS_URL } from '../utils/constants';
+import { POLYGONS_URL, POINTS_URL, MAP_CENTER_COORDS, OPEN_STREET_MAP_URL } from '../utils/constants';
 
-const initialState = [
-  {
-    name: '',
-    expertName: '',
-    polygonPoints: [[0, 0]],
-  }
-];
+import { Polygons } from './polygons';
+import { Points } from './points';
+
+const initialState = {
+  polygons: [
+    {
+      name: '',
+      expertName: '',
+      polygonPoints: [],
+    }
+  ],
+  points: []
+};
 
 export const Map = () => {
-  const [polygons, setPolygons] = useState(initialState);
+  const [polygons, setPolygons] = useState(initialState.polygons);
+  const [points, setPoints] = useState(initialState.points);
 
   useEffect(() => {
     get(POLYGONS_URL).then(({ data }) => setPolygons(data));
-    get(POINTS_URL).then(({ data }) => console.log(data));
+    get(POINTS_URL).then(({ data }) => setPoints(data));
   }, []);
 
   return (
@@ -34,19 +41,10 @@ export const Map = () => {
       easeLinearity={0.35}
     >
       <TileLayer
-        url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+        url={OPEN_STREET_MAP_URL}
       />
-      {polygons.map(({ poligonId, polygonPoints, brushColorR, brushColorG, brushColorB, expertName, name }) => (
-        <Polygon
-          positions={polygonPoints}
-          color={`rgba(${brushColorR}, ${brushColorG}, ${brushColorB}, 1)`}
-          key={poligonId}>
-          <Popup>
-            {name} - {expertName}
-          </Popup>
-        </Polygon>
-      )
-      )}
+      <Polygons polygons={polygons} />
+      <Points points={points} />
     </LeafletMap>
   );
 };
