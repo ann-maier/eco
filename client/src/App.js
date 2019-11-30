@@ -16,7 +16,7 @@ export default class App extends React.Component {
           <MenuView />
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route path="/map" component={Map} />
+            <Route path="/earth" component={Map} />
           </Switch>
         </div>
       </Router>

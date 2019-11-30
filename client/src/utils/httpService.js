@@ -4,4 +4,8 @@ async function post(url, body) {
   return axios.post(url, body);
 }
 
-export { post };
+async function get(url) {
+  return axios.get(url);
+}
+
+export { post, get };
