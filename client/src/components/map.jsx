@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Map as LeafletMap, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
+import { Map as LeafletMap, TileLayer, Popup, Polygon } from 'react-leaflet';
 
 import { get } from '../utils/httpService';
-import { POLYGONS_URL, MAP_CENTER_COORDS } from '../utils/constants';
+import { POLYGONS_URL, MAP_CENTER_COORDS, POINTS_URL } from '../utils/constants';
 
 const initialState = [
   {
@@ -17,11 +17,12 @@ export const Map = () => {
 
   useEffect(() => {
     get(POLYGONS_URL).then(({ data }) => setPolygons(data));
+    get(POINTS_URL).then(({ data }) => console.log(data));
   }, []);
 
   return (
     <LeafletMap
-      center={[49.0139, 31.2858]}
+      center={MAP_CENTER_COORDS}
       zoom={6}
       maxZoom={15}
       attributionControl={true}
@@ -48,4 +49,4 @@ export const Map = () => {
       )}
     </LeafletMap>
   );
-}
+};

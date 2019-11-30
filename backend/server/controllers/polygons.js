@@ -87,7 +87,11 @@ const getPolygons = (req, res) => {
 
       return res.send(mappedPolygons);
     })
-    .catch(console.log);
+    .catch(error => {
+      res.status(500).send({
+        message: error
+      })
+    });
 };
 
 module.exports = {
