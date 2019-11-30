@@ -33,7 +33,7 @@ const getPolygons = (req, res) => {
     FROM experts.point_poligon
     ORDER BY
       point_poligon.Id_of_poligon ASC,
-      point_poligon.order ASC;
+      point_poligon.order123 ASC;
   `;
 
 
