@@ -5,7 +5,7 @@ const getPoints = (req, res) => {
   SELECT 
     Id, Coord_Lat, Coord_Lng, Description
   FROM
-    experts.poi;
+    poi;
   `;
 
   const pointsPromise = new Promise((resolve, reject) => {

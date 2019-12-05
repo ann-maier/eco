@@ -21,8 +21,8 @@ const getPolygons = (req, res) => {
       poligon.line_thickness,
       poligon.name,
       expert.expert_name
-    FROM experts.poligon
-    INNER JOIN experts.expert ON poligon.id_of_expert = expert.id_of_expert;
+    FROM poligon
+    INNER JOIN expert ON poligon.id_of_expert = expert.id_of_expert;
   `;
 
   let queryGetPolygonPoints = `
@@ -30,7 +30,7 @@ const getPolygons = (req, res) => {
       point_poligon.longitude,
       point_poligon.latitude,
       point_poligon.Id_of_poligon
-    FROM experts.point_poligon
+    FROM point_poligon
     ORDER BY
       point_poligon.Id_of_poligon ASC,
       point_poligon.order123 ASC;
