@@ -1,12 +1,12 @@
 const pool = require('../../db-config/mysql-config');
 
 const addPoint = (req, res) => {
-  const { name, type, Coord_Lat, Coord_Lng, Description } = req.body;
+  const { name, type, coordinates, description } = req.body;
 
   const query = `
   INSERT INTO poi 
-  ('Name', 'Type', 'Coord_Lat', 'Coord_Lng', 'Description', 'Name_object')
-  VALUES ('${ name }', '${ type }', '${ Coord_Lat }', '${ Coord_Lng }', '${ Description }, '123'');
+  (Name, Type, Coord_Lat, Coord_Lng, Description, Name_object)
+  VALUES ('${ name }', '${ type }', '${ coordinates[0] }', '${ coordinates[1] }', '${ description }', 'TEST_STRING');
   `;
 
   const pointPromise = new Promise((resolve, reject) => {
@@ -15,9 +15,7 @@ const addPoint = (req, res) => {
         reject(error);
       }
 
-      if (rows[0]) {
-        resolve();
-      }
+      resolve();
     });
   });
 

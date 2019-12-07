@@ -3,7 +3,7 @@ import { Button, Dropdown, Form } from 'react-bootstrap';
 
 import { TYPE_OF_OBJECT } from '../utils/constants';
 import { post } from '../utils/httpService';
-import { POINTS_URL } from '../utils/constants';
+import { POINT_URL } from '../utils/constants';
 
 import { VerticallyCenteredModal } from './modal';
 
@@ -22,7 +22,7 @@ export const AddGeographicObjectModal = ({ onHide, show, coordinates, setShouldF
 
   const addPoint = () => {
     console.log(name, description, type, coordinates);
-    post(POINTS_URL, {
+    post(POINT_URL, {
       name, description, type, coordinates,
     }).then(() => {
       onHide();
