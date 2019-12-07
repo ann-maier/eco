@@ -3,9 +3,15 @@ const pool = require('../../db-config/mysql-config');
 const getPoints = (req, res) => {
   const query = `
   SELECT 
-    Id, Coord_Lat, Coord_Lng, Description
+    poi.Id,
+    poi.Coord_Lat,
+    poi.Coord_Lng,
+    poi.Description,
+    type_of_object.Name,
+    type_of_object.Image
   FROM
-    poi;
+    poi
+  INNER JOIN type_of_object ON poi.Type = type_of_object.id;
   `;
 
   const pointsPromise = new Promise((resolve, reject) => {
@@ -19,11 +25,14 @@ const getPoints = (req, res) => {
   });
 
   return pointsPromise.then(points => {
-    const response = points.map(({ Id, Coord_Lat, Coord_Lng, Description }) => {
+    const response = points.map(({ Id, Coord_Lat, Coord_Lng, Description, Name, Image }) => {
+
       return {
         Id,
         coordinates: [Coord_Lat, Coord_Lng],
-        Description
+        Description,
+        Name,
+        Image,
       };
     });
 
