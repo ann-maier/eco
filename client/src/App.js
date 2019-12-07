@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { MenuView } from './components/menu';
 import { Home } from './components/home';
-import { Map } from './components/map';
+import { MapView } from './components/map';
 
 export default class App extends React.Component {
   render() {
@@ -16,7 +16,7 @@ export default class App extends React.Component {
           <MenuView />
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route path="/earth" component={Map} />
+            <Route path="/earth" component={MapView} />
           </Switch>
         </div>
       </Router>
