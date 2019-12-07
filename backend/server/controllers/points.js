@@ -7,7 +7,8 @@ const getPoints = (req, res) => {
     poi.Coord_Lat,
     poi.Coord_Lng,
     poi.Description,
-    type_of_object.Name,
+    poi.Name,
+    type_of_object.Name as Object_Type_Name,
     type_of_object.Image
   FROM
     poi
@@ -25,7 +26,7 @@ const getPoints = (req, res) => {
   });
 
   return pointsPromise.then(points => {
-    const response = points.map(({ Id, Coord_Lat, Coord_Lng, Description, Name, Image }) => {
+    const response = points.map(({ Id, Coord_Lat, Coord_Lng, Description, Name, Image, Object_Type_Name }) => {
 
       return {
         Id,
@@ -33,6 +34,7 @@ const getPoints = (req, res) => {
         Description,
         Name,
         Image,
+        Object_Type_Name
       };
     });
 
