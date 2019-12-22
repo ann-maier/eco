@@ -78,13 +78,18 @@ export const MapView = () => {
         <Polygons polygons={polygons} />
         <Points points={points} />
       </LeafletMap>
-      <Navbar expand="lg" bg="dark">
-        <Button size="sm"
-          variant={isAddPointModeEnabled ? 'outline-danger' : 'outline-primary'}
-          onClick={() => setAddPointMode(!isAddPointModeEnabled)}>
-          {buttonText}
-        </Button>
-      </Navbar>
+      { sessionStorage.getItem('user') &&
+        (
+          <Navbar expand="lg" bg="dark">
+            <Button size="sm"
+            variant={isAddPointModeEnabled ? 'outline-danger' : 'outline-primary'}
+            onClick={() => setAddPointMode(!isAddPointModeEnabled)}>
+            {buttonText}
+            </Button>
+          </Navbar>
+        )
+      }
+
       <AddGeographicObjectModal
         show={showModal}
         onHide={() => setShowModal(false)}
