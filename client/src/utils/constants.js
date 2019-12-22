@@ -1,5 +1,6 @@
 export const LOGIN_URL = 'http://localhost:8080/login';
 export const POLYGONS_URL = 'http://localhost:8080/polygons';
+export const POLYGON_URL = 'http://localhost:8080/polygon';
 export const POINTS_URL = 'http://localhost:8080/points';
 export const POINT_URL = 'http://localhost:8080/point';
 
