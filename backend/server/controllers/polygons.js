@@ -94,6 +94,56 @@ const getPolygons = (req, res) => {
     });
 };
 
+const addPolygon = (req, res) => {
+  const lastIdQuery = `
+    SELECT
+      MAX(??) as maxId
+    FROM ??
+    ;`;
+
+  return pool.query(lastIdQuery, ['id_of_poligon', 'poligon'],(error, rows) => {
+    if (error) {
+      throw error;
+    }
+
+    const insertPolygonQuery = `
+      INSERT INTO
+      ??
+      VALUES
+      (?)
+    `;
+
+    const id = rows[0].maxId + 1;
+    const { points, ...values } = req.body;
+
+    pool.query(insertPolygonQuery, ['poligon', [id, ...Object.values(values)]], error => {
+      if (error) {
+        throw error;
+      }
+
+      points.forEach(({ longitude, latitude, order123 }) => {
+        const insertPolygonPointsQuert = `
+        INSERT INTO
+        ??
+        VALUES
+        (?)
+        `;
+
+        pool.query(insertPolygonPointsQuert, ['point_poligon', [longitude, latitude, id, order123], error => {
+          if (error) {
+            throw error;
+          }
+        }]);
+      });
+
+      return res.sendStatus(200);
+    });
+  });
+};
+
+
+
 module.exports = {
   getPolygons,
+  addPolygon
 };
