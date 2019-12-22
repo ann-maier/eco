@@ -123,6 +123,7 @@ export const MapView = () => {
         <Polygons polygons={polygons} />
         <Points points={points} />
       </LeafletMap>
+      { sessionStorage.getItem('user') && (
       <Navbar expand='lg' bg='dark'>
         <Button
           size='sm'
@@ -153,6 +154,7 @@ export const MapView = () => {
           </Button>
         )}
       </Navbar>
+      ) }
       <AddPointModal
         show={showPointModal}
         onHide={() => setShowPointModal(false)}
