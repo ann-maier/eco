@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -10,6 +11,8 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 app.use(corsMiddleware);
+
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 app.use('/', router);
 

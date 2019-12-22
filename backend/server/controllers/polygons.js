@@ -129,11 +129,11 @@ const addPolygon = (req, res) => {
         (?)
         `;
 
-        pool.query(insertPolygonPointsQuert, ['point_poligon', [longitude, latitude, id, order123], error => {
+        pool.query(insertPolygonPointsQuert, ['point_poligon', [longitude, latitude, id, order123]], error => {
           if (error) {
             throw error;
           }
-        }]);
+        });
       });
 
       return res.sendStatus(200);

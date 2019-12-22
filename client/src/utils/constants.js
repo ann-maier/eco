@@ -1,7 +1,9 @@
-export const LOGIN_URL = 'http://localhost:8080/login';
-export const POLYGONS_URL = 'http://localhost:8080/polygons';
-export const POINTS_URL = 'http://localhost:8080/points';
-export const POINT_URL = 'http://localhost:8080/point';
+export const SERVER_URL = 'http://localhost:8080';
+
+export const LOGIN_URL = `${SERVER_URL}/login`;
+export const POLYGONS_URL =  `${SERVER_URL}/polygons`;
+export const POINTS_URL = `${SERVER_URL}/points`;
+export const POINT_URL = `${SERVER_URL}/point`;
 
 export const MAP_CENTER_COORDS = [49.0139, 31.2858];
 export const OPEN_STREET_MAP_URL = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';

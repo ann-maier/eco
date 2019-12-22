@@ -1,5 +1,7 @@
 const pool = require('../../db-config/mysql-config');
 
+const iconsMap = require('../utils/iconsMap');
+
 const getPoints = (req, res) => {
   const query = `
   SELECT 
@@ -7,9 +9,9 @@ const getPoints = (req, res) => {
     poi.Coord_Lat,
     poi.Coord_Lng,
     poi.Description,
-    poi.Name,
-    type_of_object.Name as Object_Type_Name,
-    type_of_object.Image
+    poi.name,
+    poi.Type,
+    type_of_object.Name as Object_Type_Name
   FROM
     poi
   INNER JOIN type_of_object ON poi.Type = type_of_object.id;
@@ -26,20 +28,19 @@ const getPoints = (req, res) => {
   });
 
   return pointsPromise.then(points => {
-    const response = points.map(({ Id, Coord_Lat, Coord_Lng, Description, Name, Image, Object_Type_Name }) => {
-
+    const response = points.map(({ Id, Type, Coord_Lat, Coord_Lng, Description, name, Object_Type_Name }) => {
       return {
         Id,
         coordinates: [Coord_Lat, Coord_Lng],
         Description,
-        Name,
-        Image,
+        name,
+        Image: iconsMap.get(+Type),
         Object_Type_Name
       };
     });
-
     res.send(response);
   }).catch(error => {
+    console.log(error);
     res.status(500).send({
       message: error
     })
