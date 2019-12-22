@@ -12,11 +12,11 @@ export const Auth = (props) => {
     post(LOGIN_URL, {
       login: login,
       password: password
-    }).then(({ data: { expert_name: expertName } }) => {
-      if (expertName) {
+    }).then(({ data: user }) => {
+      if (user) {
         props.onHide();
-        props.setUser(expertName);
-        sessionStorage.setItem('user', expertName);
+        props.setUser(user);
+        sessionStorage.setItem('user', JSON.stringify(user));
       } else {
         alert('Incorrect login/password');
       }

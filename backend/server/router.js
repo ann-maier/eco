@@ -9,7 +9,7 @@ const pointController = require('./controllers/point');
 router.post('/login', authController.login);
 
 router.get('/polygons', polygonsController.getPolygons);
-router.post('/polygons', polygonsController.addPolygon);
+router.post('/polygon', polygonsController.addPolygon);
 
 router.get('/points', pointsController.getPoints);
 

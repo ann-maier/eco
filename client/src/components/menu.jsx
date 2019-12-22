@@ -6,10 +6,10 @@ import Nav from 'react-bootstrap/Nav';
 import { NavDropdown } from 'react-bootstrap';
 
 export const MenuView = () => {
-  const [user, setUser] = React.useState();
+  const [user, setUser] = React.useState({});
 
   React.useEffect(() => {
-    setUser(sessionStorage.getItem('user'));
+    setUser(JSON.parse(sessionStorage.getItem('user')));
   }, []);
 
   return (
@@ -28,7 +28,7 @@ export const MenuView = () => {
       </Nav.Item>
       <Nav.Item>
         {user ? (
-          <h1>Welcome, {user}</h1>
+          <h1>Welcome, {user.name}</h1>
         ) : (
             <Login setUser={user => setUser(user)} />
           )}

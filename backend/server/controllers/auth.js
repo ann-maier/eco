@@ -13,7 +13,7 @@ const login = (req, res) => {
   `;
 
   const values = [
-    'expert_name',
+    ['expert_name', 'id_of_expert'],
     'expert',
     'id_of_expert',
     'id_of_expert',
@@ -31,7 +31,12 @@ const login = (req, res) => {
       });
     }
 
-    return res.send(JSON.stringify(rows[0]));
+    const response = {
+      name: rows[0].expert_name,
+      id_of_expert: rows[0].id_of_expert,
+    };
+
+    return res.send(JSON.stringify(response));
   });
 };
 

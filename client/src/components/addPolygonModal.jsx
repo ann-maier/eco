@@ -35,10 +35,10 @@ export const AddPolygonModal = ({
   const [color, setColor] = useState(initialState.form.brushColor);
   const [name, setName] = useState(initialState.form.name);
   const [description, setDescription] = useState(initialState.form.description);
-  const [user, setUser] = React.useState(0);
+  const [user, setUser] = React.useState({});
 
   React.useEffect(() => {
-    setUser(sessionStorage.getItem("user"));
+    setUser(JSON.parse(sessionStorage.getItem("user")));
   }, []);
 
   const addPolygon = () => {
@@ -53,7 +53,7 @@ export const AddPolygonModal = ({
       line_alfa: color.a,
       line_thickness: Number(lineThickness),
       name,
-      id_of_exprert: Number(user),
+      id_of_expert: Number(user.id_of_expert),
       type: initialState.form.type,
       description,
       points: coordinates.map((point, index) => ({
