@@ -8,18 +8,22 @@ import { MenuView } from './components/menu';
 import { Home } from './components/home';
 import { MapView } from './components/map';
 
-export default class App extends React.Component {
-  render() {
-    return (
-      <Router>
-        <div className="App">
-          <MenuView />
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route path="/earth" component={MapView} />
-          </Switch>
-        </div>
-      </Router>
-    );
-  }
-}
+export const App = () => {
+  const [user, setUser] = React.useState({});
+
+  React.useEffect(() => {
+    setUser(JSON.parse(sessionStorage.getItem('user')));
+  }, []);
+
+  return (
+    <Router>
+      <div className="App">
+        <MenuView user={user} setUser={setUser}/>
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route path="/earth" component={() => <MapView user={user}/>}/>
+        </Switch>
+      </div>
+    </Router>
+  );
+};

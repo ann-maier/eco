@@ -5,13 +5,7 @@ import { Login } from './login';
 import Nav from 'react-bootstrap/Nav';
 import { NavDropdown } from 'react-bootstrap';
 
-export const MenuView = () => {
-  const [user, setUser] = React.useState({});
-
-  React.useEffect(() => {
-    setUser(JSON.parse(sessionStorage.getItem('user')));
-  }, []);
-
+export const MenuView = ({ user, setUser }) => {
   return (
     <Nav className='justify-content-between container mt-2 mb-2'>
       <Nav.Item className='d-flex align-items-center'>
@@ -30,7 +24,7 @@ export const MenuView = () => {
         {user ? (
           <h1>Welcome, {user.name}</h1>
         ) : (
-            <Login setUser={user => setUser(user)} />
+            <Login setUser={setUser} />
           )}
       </Nav.Item>
     </Nav>

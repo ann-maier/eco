@@ -33,7 +33,7 @@ const initialState = {
   shouldFetchData: false
 };
 
-export const MapView = () => {
+export const MapView = ({ user }) => {
   const [polygons, setPolygons] = useState(initialState.polygons);
   const [points, setPoints] = useState(initialState.points);
   const [shouldFetchData, setShouldFetchData] = useState(
@@ -123,7 +123,7 @@ export const MapView = () => {
         <Polygons polygons={polygons} />
         <Points points={points} />
       </LeafletMap>
-      { sessionStorage.getItem('user') && (
+      { user && (
       <Navbar expand='lg' bg='dark'>
         <Button
           size='sm'
