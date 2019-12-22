@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { SketchPicker } from "react-color";
-import { Button, Dropdown, Form } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 
 import { post } from "../utils/httpService";
 import { POLYGON_URL } from "../utils/constants";
