@@ -11,7 +11,6 @@ export const Points = ({ points }) => (
           iconSize: [20, 30],
         })}></Marker>
       <Circle key={id} center={coordinates} className={"poi"}>
-        {/*<img src={ image } alt="Red dot" width={20} height={20} className={"poi__icon"}/>*/}
         <Popup>
           {description}
         </Popup>
