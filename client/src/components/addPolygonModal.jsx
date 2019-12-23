@@ -27,7 +27,8 @@ export const AddPolygonModal = ({
   show,
   coordinates,
   setShouldFetchData,
-  setNewPolygonCoordinates
+  setNewPolygonCoordinates,
+  user
 }) => {
   const [lineThickness, setLineThickness] = useState(
     initialState.form.lineThickness
@@ -35,13 +36,10 @@ export const AddPolygonModal = ({
   const [color, setColor] = useState(initialState.form.brushColor);
   const [name, setName] = useState(initialState.form.name);
   const [description, setDescription] = useState(initialState.form.description);
-  const [user, setUser] = React.useState({});
 
-  React.useEffect(() => {
-    setUser(JSON.parse(sessionStorage.getItem("user")));
-  }, []);
 
   const addPolygon = () => {
+    console.log(user);
     post(POLYGON_URL, {
       brush_color_r: color.r,
       bruch_color_g: color.g,

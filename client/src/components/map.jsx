@@ -167,6 +167,7 @@ export const MapView = ({ user }) => {
         setShouldFetchData={setShouldFetchData}
         setNewPolygonCoordinates={setNewPolygonCoordinates}
         coordinates={newPolygonCoordinates}
+        user={user}
       />
     </>
   );

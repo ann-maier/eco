@@ -95,53 +95,72 @@ const getPolygons = (req, res) => {
 };
 
 const addPolygon = (req, res) => {
-  const lastIdQuery = `
+  const lastIdPromise = new Promise((resolve, reject) => {
+    const lastIdQuery = `
     SELECT
       MAX(??) as maxId
     FROM ??
     ;`;
 
-  return pool.query(lastIdQuery, ['id_of_poligon', 'poligon'],(error, rows) => {
-    if (error) {
-      throw error;
-    }
-
-    const insertPolygonQuery = `
-      INSERT INTO
-      ??
-      VALUES
-      (?)
-    `;
-
-    const id = rows[0].maxId + 1;
-    const { points, ...values } = req.body;
-
-    pool.query(insertPolygonQuery, ['poligon', [id, ...Object.values(values)]], error => {
+    pool.query(lastIdQuery, ['id_of_poligon', 'poligon'], (error, rows) => {
       if (error) {
-        throw error;
+        reject(error);
       }
 
-      points.forEach(({ longitude, latitude, order123 }) => {
-        const insertPolygonPointsQuert = `
+      resolve(rows[0].maxId);
+    });
+  });
+
+  lastIdPromise.then(maxId => {
+    const id = maxId + 1;
+    const { points, ...values } = req.body;
+
+    const insertPolygonPromise = new Promise((resolve, reject) => {
+      const insertPolygonQuery = `
         INSERT INTO
         ??
         VALUES
         (?)
-        `;
+      `;
 
-        pool.query(insertPolygonPointsQuert, ['point_poligon', [longitude, latitude, id, order123]], error => {
+      pool.query(insertPolygonQuery, ['poligon', [id, ...Object.values(values)]], error => {
+        if (error) {
+          reject(error);
+        }
+
+        resolve();
+      });
+    });
+
+    return insertPolygonPromise.then(() => ({ points, id }));
+  }).then(({ points, id }) => {
+    const insertPolygonPointsPromises = points.map(({ longitude, latitude, order123 }) => {
+      return new Promise((resolve, reject) => {
+        const insertPolygonPointsQuery = `
+          INSERT INTO
+          ??
+          VALUES
+          (?)
+          `;
+        pool.query(insertPolygonPointsQuery,  ['point_poligon', [longitude, latitude, id, order123]], error => {
           if (error) {
-            throw error;
+            reject(error);
           }
+
+          resolve();
         });
       });
+    });
 
-      return res.sendStatus(200);
+    return Promise.all(insertPolygonPointsPromises);
+  }).then(() => {
+    res.sendStatus(200);
+  }).catch(error => {
+    res.status(500).send({
+      message: error
     });
   });
 };
-
-
 
 module.exports = {
   getPolygons,
