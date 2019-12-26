@@ -134,7 +134,7 @@ const addPolygon = (req, res) => {
 
     return insertPolygonPromise.then(() => ({ points, id }));
   }).then(({ points, id }) => {
-    const insertPolygonPointsPromises = points.map(({ longitude, latitude, order123 }) => {
+    const insertPolygonPointsPromises = points.map(({ latitude, longitude, order123 }) => {
       return new Promise((resolve, reject) => {
         const insertPolygonPointsQuery = `
           INSERT INTO
@@ -142,7 +142,7 @@ const addPolygon = (req, res) => {
           VALUES
           (?)
           `;
-        pool.query(insertPolygonPointsQuery,  ['point_poligon', [longitude, latitude, id, order123]], error => {
+        pool.query(insertPolygonPointsQuery,  ['point_poligon', [latitude, longitude, id, order123]], error => {
           if (error) {
             reject(error);
           }
