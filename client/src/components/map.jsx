@@ -35,8 +35,13 @@ const initialState = {
   showPolygonModal: false,
   newPointCoordinates: [],
   newPolygonCoordinates: [],
-  shouldFetchData: false
+  shouldFetchData: true
 };
+
+const buttonText = (geographicalObj, isModeEnabled) =>
+isModeEnabled
+  ? `Disable add ${geographicalObj} mode`
+  : `Add ${geographicalObj} to the map`;
 
 export const MapView = ({ user }) => {
   const [filteredItems, setFilteredItems] = useState(initialState.filteredItems);
@@ -77,12 +82,9 @@ export const MapView = ({ user }) => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
     if (shouldFetchData) {
       fetchData();
+      setShouldFetchData(false);
     }
   }, [shouldFetchData]);
 
@@ -121,11 +123,6 @@ export const MapView = ({ user }) => {
     }
   };
 
-  const buttonText = (geographicalObj, isModeEnabled) =>
-    isModeEnabled
-      ? `Disable add ${geographicalObj} mode`
-      : `Add ${geographicalObj} to the map`;
-
   return (
     <>
       <LeafletMap
@@ -149,23 +146,20 @@ export const MapView = ({ user }) => {
         <Navbar expand='lg' className='map-options'>
           <Button
             size='sm'
-            variant={
-              isAddPointModeEnabled ? 'outline-danger' : 'outline-primary'
-            }
+            variant={isAddPointModeEnabled ? "outline-danger" : "outline-primary"}
             onClick={() => setAddPointMode(!isAddPointModeEnabled)}
           >
-            {buttonText('point', isAddPointModeEnabled)}
+            {buttonText("point", isAddPointModeEnabled)}
           </Button>
           <Button
             className='ml-3'
             size='sm'
-            disabled={isAddPolygonModeEnabled}
             variant={
-              isAddPolygonModeEnabled ? 'outline-danger' : 'outline-primary'
+              isAddPolygonModeEnabled ? "outline-danger" : "outline-primary"
             }
             onClick={() => setAddPolygonMode(!isAddPolygonModeEnabled)}
           >
-            {buttonText('polygon', isAddPolygonModeEnabled)}
+            {buttonText("polygon", isAddPolygonModeEnabled)}
           </Button>
           {isAddPolygonModeEnabled && (
             <Button
