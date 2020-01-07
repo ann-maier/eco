@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from 'react';
 import { Button, Dropdown, Form } from "react-bootstrap";
 
-import { TYPE_OF_OBJECT } from "../utils/constants";
-import { post } from "../utils/httpService";
+import { TYPE_OF_OBJECT_URL } from "../utils/constants";
+import { post, get } from "../utils/httpService";
 import { POINT_URL } from "../utils/constants";
 
 import { VerticallyCenteredModal } from "./modal";
@@ -11,7 +11,10 @@ const initialState = {
   form: {
     name: "",
     description: "",
-    type: 0
+    type: {
+      id: 0,
+      name: ''
+    }
   }
 };
 
@@ -24,18 +27,25 @@ export const AddPointModal = ({
   const [name, setName] = useState(initialState.form.name);
   const [description, setDescription] = useState(initialState.form.description);
   const [type, setType] = useState(initialState.form.type);
+  const [types, setTypes] = useState([]);
 
   const addPoint = () => {
     post(POINT_URL, {
       name,
       description,
-      type,
+      type: type.id,
       coordinates
     }).then(() => {
       onHide();
       setShouldFetchData(true);
     });
   };
+
+  useEffect(() => {
+    get(TYPE_OF_OBJECT_URL).then(({ data }) => {
+      setTypes(data);
+    })
+  }, []);
 
   return (
     <VerticallyCenteredModal size='sm' show={show} onHide={onHide}>
@@ -47,15 +57,15 @@ export const AddPointModal = ({
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
-              {TYPE_OF_OBJECT.map(t => (
+              { types.length && types.map(typeOfObject => (
                 <Dropdown.Item
-                  key={t}
-                  active={t === type}
-                  onClick={() => setType(t)}
+                  key={typeOfObject.id}
+                  active={typeOfObject === type}
+                  onClick={() => setType(typeOfObject)}
                 >
-                  {t}
+                  {typeOfObject.name}
                 </Dropdown.Item>
-              ))}
+              )) }
             </Dropdown.Menu>
           </Dropdown>
         </Form.Group>

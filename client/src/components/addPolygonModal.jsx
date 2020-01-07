@@ -39,7 +39,6 @@ export const AddPolygonModal = ({
 
 
   const addPolygon = () => {
-    console.log(user);
     post(POLYGON_URL, {
       brush_color_r: color.r,
       bruch_color_g: color.g,
