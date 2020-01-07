@@ -5,7 +5,7 @@ import { EXPERTS_URL } from '../utils/constants';
 
 import './filtration.css';
 
-export const Filtration = ({ setFiltratedItems: setFilteredItems }) => {
+export const Filtration = ({ setFilteredItems }) => {
   const [existingExperts, setExistingExperts] = useState([]);
 
   useEffect(() => {

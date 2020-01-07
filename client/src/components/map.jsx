@@ -26,6 +26,8 @@ const initialState = {
       polygonPoints: []
     }
   ],
+  filteredPolygons: [],
+  filteredItems: [],
   points: [],
   isAddPointModeEnabled: false,
   isAddPolygonModeEnabled: false,
@@ -37,10 +39,8 @@ const initialState = {
 };
 
 export const MapView = ({ user }) => {
-  const [filteredItems, setFilteredItems] = useState([]);
-  const [initialPolygons, setInitialPolygons] = useState([]);
-
-  const [polygons, setPolygons] = useState(initialState.polygons);
+  const [filteredItems, setFilteredItems] = useState(initialState.filteredItems);
+  const [filteredPolygons, setFilteredPolygons] = useState(initialState.filteredPolygons);
   const [points, setPoints] = useState(initialState.points);
   const [shouldFetchData, setShouldFetchData] = useState(
     initialState.shouldFetchData
@@ -70,8 +70,8 @@ export const MapView = ({ user }) => {
 
   const fetchData = () => {
     get(POLYGONS_URL).then(({ data }) => {
-      setPolygons(data);
-      setInitialPolygons(data);
+      setFilteredPolygons(data);
+      initialState.polygons = data;
     });
     get(POINTS_URL).then(({ data }) => setPoints(data));
   };
@@ -88,12 +88,14 @@ export const MapView = ({ user }) => {
 
   useEffect(() => {
     if (filteredItems.length) {
-      const filteredPolygons = initialPolygons.filter(({ idOfExpert }) => {
+      const filteredPolygons = initialState.polygons.filter(({ idOfExpert }) => {
         return filteredItems.some(
           ({ id_of_expert }) => idOfExpert === id_of_expert
         );
       });
-      setPolygons(filteredPolygons);
+      setFilteredPolygons(filteredPolygons);
+    } else {
+      setFilteredPolygons(initialState.polygons);
     }
   }, [filteredItems]);
 
@@ -140,7 +142,7 @@ export const MapView = ({ user }) => {
         onClick={addGeographicalObjectToMap}
       >
         <TileLayer url={OPEN_STREET_MAP_URL} />
-        <Polygons polygons={polygons} />
+        <Polygons polygons={filteredPolygons} />
         <Points points={points} />
       </LeafletMap>
       {user && (
@@ -178,7 +180,7 @@ export const MapView = ({ user }) => {
         </Navbar>
       )}
 
-      <Filtration setFiltratedItems={setFilteredItems} />
+      <Filtration setFilteredItems={setFilteredItems} />
 
       <AddPointModal
         show={showPointModal}
