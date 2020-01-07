@@ -44,7 +44,7 @@ export const AddPointModal = ({
   useEffect(() => {
     get(TYPE_OF_OBJECT_URL).then(({ data }) => {
       setTypes(data);
-    })
+    });
   }, []);
 
   return (
