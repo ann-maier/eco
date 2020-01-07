@@ -22,7 +22,7 @@ export const MenuView = ({ user, setUser }) => {
       </Nav.Item>
       <Nav.Item>
         {user ? (
-          <h1>Welcome, {user.name}</h1>
+          <h3>Welcome, {user.FIO} ({user.expert_name})</h3>
         ) : (
             <Login setUser={setUser} />
           )}

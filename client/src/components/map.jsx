@@ -15,6 +15,8 @@ import { Points } from "./points";
 import { AddPointModal } from "./addPointModal";
 import { AddPolygonModal } from "./addPolygonModal";
 
+import './map.css';
+
 const initialState = {
   polygons: [
     {
@@ -124,7 +126,7 @@ export const MapView = ({ user }) => {
         <Points points={points} />
       </LeafletMap>
       { user && (
-      <Navbar expand='lg' bg='dark'>
+      <Navbar expand='lg' className='map-options'>
         <Button
           size='sm'
           variant={isAddPointModeEnabled ? "outline-danger" : "outline-primary"}
