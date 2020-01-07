@@ -6,6 +6,7 @@ import { EXPERTS_URL } from '../utils/constants';
 import './filtration.css';
 
 export const Filtration = ({ setFilteredItems }) => {
+  let filtrationForm;
   const [existingExperts, setExistingExperts] = useState([]);
 
   useEffect(() => {
@@ -17,8 +18,8 @@ export const Filtration = ({ setFilteredItems }) => {
   const submitHandler = (e) => {
     e.preventDefault();
 
-    const inputs = e.currentTarget.querySelectorAll(`input[type="checkbox"]`);
-    const selectedExperts = Array.from(inputs)
+    const { expertCheckbox: expertCheckboxes } = filtrationForm;
+    const selectedExperts = Array.from(expertCheckboxes)
       .filter(({ checked }) => checked)
       .map(({ value }) => {
         return existingExperts.find(
@@ -33,6 +34,7 @@ export const Filtration = ({ setFilteredItems }) => {
     <Form
       onSubmit={submitHandler}
       className='filtration-form d-flex justify-content-center flex-column'
+      ref={form => filtrationForm = form}
     >
       <Form.Group>
         <Form.Label>Select expert</Form.Label>
@@ -43,6 +45,7 @@ export const Filtration = ({ setFilteredItems }) => {
               type='checkbox'
               value={expert.id_of_expert}
               key={expert.id_of_expert}
+              name='expertCheckbox'
             />
           ))}
       </Form.Group>
