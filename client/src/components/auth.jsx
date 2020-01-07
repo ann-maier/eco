@@ -49,7 +49,7 @@ export const Auth = (props) => {
             </Form.Group>
             <Button variant='primary' onClick={loginUser}>
               Login
-              </Button>
+            </Button>
           </Form>
         </Col>
       </Row>

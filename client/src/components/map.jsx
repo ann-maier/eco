@@ -1,27 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { Button, Navbar } from "react-bootstrap";
-import { Map as LeafletMap, TileLayer } from "react-leaflet";
+import React, { useEffect, useState } from 'react';
+import { Button, Navbar } from 'react-bootstrap';
+import { Map as LeafletMap, TileLayer } from 'react-leaflet';
 
-import { get } from "../utils/httpService";
+import { get } from '../utils/httpService';
 import {
   POLYGONS_URL,
   POINTS_URL,
   MAP_CENTER_COORDS,
   OPEN_STREET_MAP_URL
-} from "../utils/constants";
+} from '../utils/constants';
 
-import { Polygons } from "./polygons";
-import { Points } from "./points";
-import { AddPointModal } from "./addPointModal";
-import { AddPolygonModal } from "./addPolygonModal";
+import { Polygons } from './polygons';
+import { Points } from './points';
+import { AddPointModal } from './addPointModal';
+import { AddPolygonModal } from './addPolygonModal';
+import { Filtration } from './filtration';
 
 import './map.css';
 
 const initialState = {
   polygons: [
     {
-      name: "",
-      expertName: "",
+      name: '',
+      expertName: '',
       polygonPoints: []
     }
   ],
@@ -36,6 +37,9 @@ const initialState = {
 };
 
 export const MapView = ({ user }) => {
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [initialPolygons, setInitialPolygons] = useState([]);
+
   const [polygons, setPolygons] = useState(initialState.polygons);
   const [points, setPoints] = useState(initialState.points);
   const [shouldFetchData, setShouldFetchData] = useState(
@@ -65,7 +69,10 @@ export const MapView = ({ user }) => {
   );
 
   const fetchData = () => {
-    get(POLYGONS_URL).then(({ data }) => setPolygons(data));
+    get(POLYGONS_URL).then(({ data }) => {
+      setPolygons(data);
+      setInitialPolygons(data);
+    });
     get(POINTS_URL).then(({ data }) => setPoints(data));
   };
 
@@ -78,6 +85,17 @@ export const MapView = ({ user }) => {
       fetchData();
     }
   }, [shouldFetchData]);
+
+  useEffect(() => {
+    if (filteredItems.length) {
+      const filteredPolygons = initialPolygons.filter(({ idOfExpert }) => {
+        return filteredItems.some(
+          ({ id_of_expert }) => idOfExpert === id_of_expert
+        );
+      });
+      setPolygons(filteredPolygons);
+    }
+  }, [filteredItems]);
 
   const addGeographicalObjectToMap = ({ latlng: { lat, lng } }) => {
     if (isAddPointModeEnabled) {
@@ -125,38 +143,43 @@ export const MapView = ({ user }) => {
         <Polygons polygons={polygons} />
         <Points points={points} />
       </LeafletMap>
-      { user && (
-      <Navbar expand='lg' className='map-options'>
-        <Button
-          size='sm'
-          variant={isAddPointModeEnabled ? "outline-danger" : "outline-primary"}
-          onClick={() => setAddPointMode(!isAddPointModeEnabled)}
-        >
-          {buttonText("point", isAddPointModeEnabled)}
-        </Button>
-        <Button
-          className='ml-3'
-          size='sm'
-          disabled={isAddPolygonModeEnabled}
-          variant={
-            isAddPolygonModeEnabled ? "outline-danger" : "outline-primary"
-          }
-          onClick={() => setAddPolygonMode(!isAddPolygonModeEnabled)}
-        >
-          {buttonText("polygon", isAddPolygonModeEnabled)}
-        </Button>
-        {isAddPolygonModeEnabled && (
+      {user && (
+        <Navbar expand='lg' className='map-options'>
+          <Button
+            size='sm'
+            variant={
+              isAddPointModeEnabled ? 'outline-danger' : 'outline-primary'
+            }
+            onClick={() => setAddPointMode(!isAddPointModeEnabled)}
+          >
+            {buttonText('point', isAddPointModeEnabled)}
+          </Button>
           <Button
             className='ml-3'
             size='sm'
-            variant='outline-success'
-            onClick={finishPolygon}
+            disabled={isAddPolygonModeEnabled}
+            variant={
+              isAddPolygonModeEnabled ? 'outline-danger' : 'outline-primary'
+            }
+            onClick={() => setAddPolygonMode(!isAddPolygonModeEnabled)}
           >
-            Finish polygon
+            {buttonText('polygon', isAddPolygonModeEnabled)}
           </Button>
-        )}
-      </Navbar>
-      ) }
+          {isAddPolygonModeEnabled && (
+            <Button
+              className='ml-3'
+              size='sm'
+              variant='outline-success'
+              onClick={finishPolygon}
+            >
+              Finish polygon
+            </Button>
+          )}
+        </Navbar>
+      )}
+
+      <Filtration setFiltratedItems={setFilteredItems} />
+
       <AddPointModal
         show={showPointModal}
         onHide={() => setShowPointModal(false)}

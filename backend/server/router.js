@@ -6,6 +6,7 @@ const polygonsController = require('./controllers/polygons');
 const pointsController = require('./controllers/points');
 const pointController = require('./controllers/point');
 const typeOfObjectController = require('./controllers/typeofobject');
+const expertsController = require('./controllers/experts');
 
 router.post('/login', authController.login);
 
@@ -19,5 +20,7 @@ router.post('/point', pointController.addPoint);
 router.post('/point', pointController.addPoint);
 
 router.get('/typeofobjects', typeOfObjectController.getTypes);
+
+router.get('/experts', expertsController.getExperts);
 
 module.exports = router;

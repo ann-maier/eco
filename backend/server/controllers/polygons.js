@@ -20,6 +20,7 @@ const getPolygons = (req, res) => {
       poligon.line_alfa,
       poligon.line_thickness,
       poligon.name,
+      poligon.id_of_expert,
       expert.expert_name
     FROM poligon
     INNER JOIN expert ON poligon.id_of_expert = expert.id_of_expert;
@@ -35,7 +36,6 @@ const getPolygons = (req, res) => {
       point_poligon.Id_of_poligon ASC,
       point_poligon.order123 ASC;
   `;
-
 
   const getPolygonsPromise = new Promise((resolve, reject) => {
     pool.query(queryGetPolygons, (error, polygons) => {
@@ -57,12 +57,9 @@ const getPolygons = (req, res) => {
     });
   });
 
-  return Promise.all([
-    getPolygonsPromise,
-    queryGetPolygonPointsPromise
-  ]).then(
-    ([polygons, polygonPoints]) => {
-      const mappedPolygons = polygons.map(polygon => {
+  return Promise.all([getPolygonsPromise, queryGetPolygonPointsPromise])
+    .then(([polygons, polygonPoints]) => {
+      const mappedPolygons = polygons.map((polygon) => {
         const mappedPolygonPoints = mapPolygonPoints(
           polygonPoints,
           polygon.id_of_poligon
@@ -82,15 +79,16 @@ const getPolygons = (req, res) => {
           lineThickness: polygon.line_thickness,
           name: polygon.name,
           polygonPoints: mappedPolygonPoints,
+          idOfExpert: polygon.id_of_expert
         };
       });
 
       return res.send(mappedPolygons);
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).send({
         message: error
-      })
+      });
     });
 };
 
@@ -111,55 +109,69 @@ const addPolygon = (req, res) => {
     });
   });
 
-  lastIdPromise.then(maxId => {
-    const id = maxId + 1;
-    const { points, ...values } = req.body;
+  lastIdPromise
+    .then((maxId) => {
+      const id = maxId + 1;
+      const { points, ...values } = req.body;
 
-    const insertPolygonPromise = new Promise((resolve, reject) => {
-      const insertPolygonQuery = `
+      const insertPolygonPromise = new Promise((resolve, reject) => {
+        const insertPolygonQuery = `
         INSERT INTO
         ??
         VALUES
         (?)
       `;
 
-      pool.query(insertPolygonQuery, ['poligon', [id, ...Object.values(values)]], error => {
-        if (error) {
-          reject(error);
-        }
+        pool.query(
+          insertPolygonQuery,
+          ['poligon', [id, ...Object.values(values)]],
+          (error) => {
+            if (error) {
+              reject(error);
+            }
 
-        resolve();
+            resolve();
+          }
+        );
       });
-    });
 
-    return insertPolygonPromise.then(() => ({ points, id }));
-  }).then(({ points, id }) => {
-    const insertPolygonPointsPromises = points.map(({ latitude, longitude, order123 }) => {
-      return new Promise((resolve, reject) => {
-        const insertPolygonPointsQuery = `
+      return insertPolygonPromise.then(() => ({ points, id }));
+    })
+    .then(({ points, id }) => {
+      const insertPolygonPointsPromises = points.map(
+        ({ latitude, longitude, order123 }) => {
+          return new Promise((resolve, reject) => {
+            const insertPolygonPointsQuery = `
           INSERT INTO
           ??
           VALUES
           (?)
           `;
-        pool.query(insertPolygonPointsQuery,  ['point_poligon', [latitude, longitude, id, order123]], error => {
-          if (error) {
-            reject(error);
-          }
+            pool.query(
+              insertPolygonPointsQuery,
+              ['point_poligon', [latitude, longitude, id, order123]],
+              (error) => {
+                if (error) {
+                  reject(error);
+                }
 
-          resolve();
-        });
+                resolve();
+              }
+            );
+          });
+        }
+      );
+
+      return Promise.all(insertPolygonPointsPromises);
+    })
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch((error) => {
+      res.status(500).send({
+        message: error
       });
     });
-
-    return Promise.all(insertPolygonPointsPromises);
-  }).then(() => {
-    res.sendStatus(200);
-  }).catch(error => {
-    res.status(500).send({
-      message: error
-    });
-  });
 };
 
 module.exports = {
