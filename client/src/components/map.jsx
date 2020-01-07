@@ -32,8 +32,13 @@ const initialState = {
   showPolygonModal: false,
   newPointCoordinates: [],
   newPolygonCoordinates: [],
-  shouldFetchData: false
+  shouldFetchData: true
 };
+
+const buttonText = (geographicalObj, isModeEnabled) =>
+isModeEnabled
+  ? `Disable add ${geographicalObj} mode`
+  : `Add ${geographicalObj} to the map`;
 
 export const MapView = ({ user }) => {
   const [polygons, setPolygons] = useState(initialState.polygons);
@@ -70,12 +75,9 @@ export const MapView = ({ user }) => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
     if (shouldFetchData) {
       fetchData();
+      setShouldFetchData(false);
     }
   }, [shouldFetchData]);
 
@@ -101,11 +103,6 @@ export const MapView = ({ user }) => {
     }
   };
 
-  const buttonText = (geographicalObj, isModeEnabled) =>
-    isModeEnabled
-      ? `Disable add ${geographicalObj} mode`
-      : `Add ${geographicalObj} to the map`;
-
   return (
     <>
       <LeafletMap
@@ -125,38 +122,37 @@ export const MapView = ({ user }) => {
         <Polygons polygons={polygons} />
         <Points points={points} />
       </LeafletMap>
-      { user && (
-      <Navbar expand='lg' className='map-options'>
-        <Button
-          size='sm'
-          variant={isAddPointModeEnabled ? "outline-danger" : "outline-primary"}
-          onClick={() => setAddPointMode(!isAddPointModeEnabled)}
-        >
-          {buttonText("point", isAddPointModeEnabled)}
-        </Button>
-        <Button
-          className='ml-3'
-          size='sm'
-          disabled={isAddPolygonModeEnabled}
-          variant={
-            isAddPolygonModeEnabled ? "outline-danger" : "outline-primary"
-          }
-          onClick={() => setAddPolygonMode(!isAddPolygonModeEnabled)}
-        >
-          {buttonText("polygon", isAddPolygonModeEnabled)}
-        </Button>
-        {isAddPolygonModeEnabled && (
+      {user && (
+        <Navbar expand='lg' className='map-options'>
+          <Button
+            size='sm'
+            variant={isAddPointModeEnabled ? "outline-danger" : "outline-primary"}
+            onClick={() => setAddPointMode(!isAddPointModeEnabled)}
+          >
+            {buttonText("point", isAddPointModeEnabled)}
+          </Button>
           <Button
             className='ml-3'
             size='sm'
-            variant='outline-success'
-            onClick={finishPolygon}
+            variant={
+              isAddPolygonModeEnabled ? "outline-danger" : "outline-primary"
+            }
+            onClick={() => setAddPolygonMode(!isAddPolygonModeEnabled)}
           >
-            Finish polygon
+            {buttonText("polygon", isAddPolygonModeEnabled)}
           </Button>
-        )}
-      </Navbar>
-      ) }
+          {isAddPolygonModeEnabled && (
+            <Button
+              className='ml-3'
+              size='sm'
+              variant='outline-success'
+              onClick={finishPolygon}
+            >
+              Finish polygon
+          </Button>
+          )}
+        </Navbar>
+      )}
       <AddPointModal
         show={showPointModal}
         onHide={() => setShowPointModal(false)}
