@@ -49,7 +49,7 @@ const getPolygons = (req, res) => {
     });
   });
 
-  const queryGetPolygonPointsPromise = new Promise((resolve, reject) => {
+  const getPolygonPointsPromise = new Promise((resolve, reject) => {
     pool.query(queryGetPolygonPoints, (error, polygonPoints) => {
       if (error) {
         reject(error);
@@ -59,9 +59,9 @@ const getPolygons = (req, res) => {
     });
   });
 
-  return Promise.all([getPolygonsPromise, queryGetPolygonPointsPromise])
+  return Promise.all([getPolygonsPromise, getPolygonPointsPromise])
     .then(([polygons, polygonPoints]) => {
-      const mappedPolygons = polygons.map((polygon) => {
+      return polygons.map((polygon) => {
         const mappedPolygonPoints = mapPolygonPoints(
           polygonPoints,
           polygon.id_of_poligon
@@ -84,8 +84,34 @@ const getPolygons = (req, res) => {
           idOfExpert: polygon.id_of_expert
         };
       });
+    })
+    .then(mappedPolygons => {
+      const mappedPolygonsPromises = mappedPolygons.map(polygon => {
+        const emissionOnMapPromise = new Promise((resolve, reject) => {
+          const emissionsOnMapTable = 'emissions_on_map';
+          const columnNames = ['idElement', 'idEnvironment', 'ValueAvg', 'ValueMax', 'Year', 'Month', 'day', 'Measure'];
+          const query = `
+            SELECT ??
+            FROM
+            ??
+            WHERE
+            ??
+            =
+            ?
+          `;
+          const values = [columnNames, emissionsOnMapTable, 'idPoligon', polygon.poligonId];
+          pool.query(query, values, (error, rows) => {
+            if (error) {
+              reject(error);
+            }
 
-      return res.send(mappedPolygons);
+            resolve(rows[0]);
+          });
+        });
+        return emissionOnMapPromise.then(emission => ({ ...polygon, emission }));
+      });
+
+      return Promise.all(mappedPolygonsPromises).then(polygons => res.send(polygons));
     })
     .catch((error) => {
       res.status(500).send({
