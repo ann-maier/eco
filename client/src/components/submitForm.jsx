@@ -77,10 +77,15 @@ export const SubmitForm = ({ onSave }) => {
         setElement(element);
         setMeasure(element.measure);
 
-        post(GDK_URL, { code: 101 || element.code, environment: 1 || selectedEnvironment.id })
+        post(GDK_URL, { code: element.code, environment: selectedEnvironment.id })
             .then(({ data }) => {
-                setGdkAvg(data.average);
-                setGdkMax(data.max);
+                if (data.average && data.max) {
+                  setGdkAvg(data.average);
+                  setGdkMax(data.max);
+                } else {
+                  setGdkAvg(initialState.form.valueAvg);
+                  setGdkMax(initialState.form.valueMax);
+                }
             })
     }
 
@@ -132,7 +137,7 @@ export const SubmitForm = ({ onSave }) => {
                             onChange={e => setAvgValue(+e.target.value)}
                         />
                     </Form.Group>
-                    {gdkAvg < valueAvg && <Alert variant="danger">Average value is too high ({gdkAvg})</Alert>}
+                    {gdkAvg > 0 && gdkAvg < valueAvg && <Alert variant="danger">Average value is too high ({gdkAvg})</Alert>}
 
                     <Form.Group>
                         <Form.Label>Enter max value</Form.Label>
@@ -142,7 +147,7 @@ export const SubmitForm = ({ onSave }) => {
                             onChange={e => setMaxValue(+e.target.value)}
                         />
                     </Form.Group>
-                    {gdkMax < valueMax && <Alert variant="danger">Max value is too high ({gdkMax})</Alert>}
+                    {gdkMax > 0 && gdkMax < valueMax && <Alert variant="danger">Max value is too high ({gdkMax})</Alert>}
 
                     <Form.Group>
                         <Dropdown>

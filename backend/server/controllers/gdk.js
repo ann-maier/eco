@@ -26,12 +26,16 @@ const getGdkElement = (req, res) => {
       });
     }
 
-    const response = {
-      average: rows[0].mpc_avrg_d,
-      max: rows[0].mpc_m_ot,
-    };
+    if (!!rows[0]) {
+      const response = {
+        average: rows[0].mpc_avrg_d,
+        max: rows[0].mpc_m_ot,
+      };
 
-    return res.send(JSON.stringify(response));
+      return res.send(JSON.stringify(response));
+    } else {
+      return res.send({});
+    }
   });
 };
 
