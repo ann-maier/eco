@@ -1,7 +1,8 @@
 const pool = require('../../db-config/mysql-config');
+const { insertEmissionOnMap, SOURCE_POI } = require('./emissions_on_map');
 
 const addPoint = (req, res) => {
-  const { name, type, coordinates, description } = req.body;
+  const { name, type, coordinates, description, emission } = req.body;
 
   const query = `
   INSERT INTO poi 
@@ -14,14 +15,18 @@ const addPoint = (req, res) => {
       if (error) {
         reject(error);
       }
-
-      resolve();
+      resolve(+rows.insertId);
     });
   });
 
-  return pointPromise.then(() => {
-    res.sendStatus(200);
-  }).catch(error => {
+  return pointPromise.then((insertedId) => {
+    if (!!emission) {
+      emission.idPoi = insertedId;
+      return insertEmissionOnMap(SOURCE_POI, emission);
+    }
+  })
+  .then(() => res.sendStatus(200))
+  .catch(error => {
     res.status(500).send({
       message: error
     })
