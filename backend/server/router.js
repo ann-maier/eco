@@ -7,6 +7,9 @@ const pointsController = require('./controllers/points');
 const pointController = require('./controllers/point');
 const typeOfObjectController = require('./controllers/typeofobject');
 const expertsController = require('./controllers/experts');
+const environmentsController = require('./controllers/environments');
+const elementsController = require('./controllers/elements');
+const gdkController = require('./controllers/gdk');
 
 router.post('/login', authController.login);
 
@@ -22,5 +25,11 @@ router.post('/point', pointController.addPoint);
 router.get('/typeofobjects', typeOfObjectController.getTypes);
 
 router.get('/experts', expertsController.getExperts);
+
+router.get('/environments', environmentsController.getEnvironments);
+
+router.get('/elements', elementsController.getElements);
+
+router.post('/gdk', gdkController.getGdkElement);
 
 module.exports = router;
