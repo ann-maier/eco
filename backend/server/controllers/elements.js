@@ -4,11 +4,11 @@ const tableName = 'elements';
 
 const getElements = (req, res) => {
   const query = `
-  SELECT 
-    ??
-  FROM 
-    ??
-  ;`;
+    SELECT 
+      ??
+    FROM 
+      ??
+    ;`;
 
   const values = [['code', 'name', 'short_name', 'measure'], tableName];
 

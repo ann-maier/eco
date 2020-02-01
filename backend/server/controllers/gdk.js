@@ -6,15 +6,15 @@ const getGdkElement = (req, res) => {
   const { code, environment } = req.body;
 
   const query = `
-  SELECT 
-    ??
-  FROM 
-    ??
-  WHERE 
-  ?? = ?
-  AND
-  ?? = ?
-  ;`;
+    SELECT 
+      ??
+    FROM 
+      ??
+    WHERE 
+      ?? = ?
+    AND
+      ?? = ?
+    ;`;
 
   const values = [['mpc_m_ot', 'mpc_avrg_d'], tableName, 'code', code, 'environment', environment];
 

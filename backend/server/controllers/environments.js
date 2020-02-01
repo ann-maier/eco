@@ -4,11 +4,11 @@ const tableName = 'environment';
 
 const getEnvironments = (req, res) => {
   const query = `
-  SELECT 
-    ??
-  FROM 
-    ??
-  ;`;
+    SELECT 
+      ??
+    FROM 
+      ??
+    ;`;
 
   const values = [['*'], tableName];
 

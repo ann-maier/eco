@@ -7,10 +7,11 @@ const SOURCE_POLYGON = 'polygon';
 const insertEmissionOnMap = (source, emission) => {
   const { idPoi, idElement, idEnvironment, valueAvg, valueMax, idPolygon, year, month, day, measure } = emission;
   return new Promise((resolve, reject) => {
-    const query = `INSERT INTO 
+    const query = `
+      INSERT INTO 
         ??
         (??)
-        VALUES
+      VALUES
         (?)`;
 
     const columnNames = ['idElement', 'idEnvironment', 'ValueAvg', 'ValueMax', 'Year', 'Month', 'day', 'Measure'];
@@ -46,14 +47,12 @@ const getEmissionOnMap = (source, id) => {
     const emissionsOnMapTable = 'emissions_on_map';
     const columnNames = ['idElement', 'idEnvironment', 'ValueAvg', 'ValueMax', 'Year', 'Month', 'day', 'Measure'];
     const query = `
-            SELECT ??
-            FROM
-            ??
-            WHERE
-            ??
-            =
-            ?
-          `;
+      SELECT
+       ??
+      FROM
+        ??
+      WHERE
+        ?? = ?`;
     const values = [columnNames, emissionsOnMapTable, columnName, id];
     pool.query(query, values, (error, rows) => {
       if (error) {
