@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Dropdown, Form } from "react-bootstrap";
+import { Dropdown, Form } from "react-bootstrap";
 
-import { ELEMENTS_URL, ENVIRONMENTS_URL, GDK_URL, TYPE_OF_OBJECT_URL } from "../utils/constants";
+import { TYPE_OF_OBJECT_URL } from "../utils/constants";
 import { post, get } from "../utils/httpService";
 import { POINT_URL } from "../utils/constants";
 
 import { VerticallyCenteredModal } from "./modal";
+import { SubmitForm } from './submitForm';
 
 const initialState = {
   form: {
@@ -29,23 +30,21 @@ export const AddPointModal = ({
   const [type, setType] = useState(initialState.form.type);
   const [types, setTypes] = useState([]);
 
-  const addPoint = () => {
+  const clearForm = () => {
+    setName(initialState.form.name);
+    setDescription(initialState.form.description);
+    setType(initialState.form.type);
+  };
+
+  const addPoint = emission => {
     post(POINT_URL, {
       name,
       description,
       type: type.id,
       coordinates,
-      emission: {
-        idElement: 148,
-        idEnvironment: 4,
-        valueAvg: 20,
-        valueMax: 50,
-        year: 2019,
-        month: 11,
-        day: 21,
-        measure: 'kg/m',
-      }
+      emission
     }).then(() => {
+      clearForm();
       onHide();
       setShouldFetchData(true);
     });
@@ -54,18 +53,6 @@ export const AddPointModal = ({
   useEffect(() => {
     get(TYPE_OF_OBJECT_URL).then(({ data }) => {
       setTypes(data);
-    });
-  }, []);
-
-  useEffect(() => {
-    get(ENVIRONMENTS_URL).then(({ data }) => {
-      console.log(data);
-    });
-    get(ELEMENTS_URL).then(({ data }) => {
-      console.log(data);
-    });
-    post(GDK_URL, { code: 101, environment: 1 }).then(({ data }) => {
-      console.log(data);
     });
   }, []);
 
@@ -79,7 +66,7 @@ export const AddPointModal = ({
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
-              { types.length && types.map(typeOfObject => (
+              {types.length && types.map(typeOfObject => (
                 <Dropdown.Item
                   key={typeOfObject.id}
                   active={typeOfObject === type}
@@ -87,7 +74,7 @@ export const AddPointModal = ({
                 >
                   {typeOfObject.name}
                 </Dropdown.Item>
-              )) }
+              ))}
             </Dropdown.Menu>
           </Dropdown>
         </Form.Group>
@@ -111,9 +98,7 @@ export const AddPointModal = ({
           />
         </Form.Group>
 
-        <Button variant='outline-primary' onClick={addPoint}>
-          Save point
-        </Button>
+        <SubmitForm onSave={addPoint} />
       </Form>
     </VerticallyCenteredModal>
   );

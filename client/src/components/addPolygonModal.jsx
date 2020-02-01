@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { SketchPicker } from "react-color";
-import { Button, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
 import { post } from "../utils/httpService";
 import { POLYGON_URL } from "../utils/constants";
 
 import { VerticallyCenteredModal } from "./modal";
+import { SubmitForm } from './submitForm';
 
 const initialState = {
   form: {
@@ -37,8 +38,14 @@ export const AddPolygonModal = ({
   const [name, setName] = useState(initialState.form.name);
   const [description, setDescription] = useState(initialState.form.description);
 
+  const clearForm = () => {
+    setLineThickness(initialState.form.lineThickness);
+    setColor(initialState.form.brushColor);
+    setName(initialState.form.name);
+    setDescription(initialState.form.description);
+  }
 
-  const addPolygon = () => {
+  const addPolygon = emission => {
     post(POLYGON_URL, {
       brush_color_r: color.r,
       bruch_color_g: color.g,
@@ -58,18 +65,10 @@ export const AddPolygonModal = ({
         longitude: point.lng,
         order123: index
       })),
-      emission: {
-        idElement: 148,
-        idEnvironment: 4,
-        valueAvg: 20,
-        valueMax: 50,
-        year: 2019,
-        month: 11,
-        day: 21,
-        measure: 'kg/m',
-      }
+      emission
     })
       .then(() => {
+        clearForm();
         onHide();
         setNewPolygonCoordinates([]);
         setShouldFetchData(true);
@@ -78,10 +77,6 @@ export const AddPolygonModal = ({
         setNewPolygonCoordinates([]);
         setShouldFetchData(false);
       });
-  };
-
-  const handleChangeComplete = ({ rgb }) => {
-    setColor(rgb);
   };
 
   return (
@@ -97,7 +92,7 @@ export const AddPolygonModal = ({
             onChange={e => setLineThickness(e.target.value)}
           />
           <br />
-          <SketchPicker color={color} onChangeComplete={handleChangeComplete} />
+          <SketchPicker color={color} onChangeComplete={({ rgb }) => setColor(rgb)} />
         </Form.Group>
 
         <Form.Group>
@@ -119,9 +114,7 @@ export const AddPolygonModal = ({
           />
         </Form.Group>
 
-        <Button variant='outline-primary' onClick={addPolygon}>
-          Save polygon
-        </Button>
+        <SubmitForm onSave={addPolygon} />
       </Form>
     </VerticallyCenteredModal>
   );
