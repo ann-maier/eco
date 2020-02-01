@@ -57,7 +57,17 @@ export const AddPolygonModal = ({
         latitude: point.lat,
         longitude: point.lng,
         order123: index
-      }))
+      })),
+      emission: {
+        idElement: 148,
+        idEnvironment: 4,
+        valueAvg: 20,
+        valueMax: 50,
+        year: 2019,
+        month: 11,
+        day: 21,
+        measure: 'kg/m',
+      }
     })
       .then(() => {
         onHide();

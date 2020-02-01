@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Dropdown, Form } from "react-bootstrap";
 
-import { TYPE_OF_OBJECT_URL } from "../utils/constants";
+import { ELEMENTS_URL, ENVIRONMENTS_URL, GDK_URL, TYPE_OF_OBJECT_URL } from "../utils/constants";
 import { post, get } from "../utils/httpService";
 import { POINT_URL } from "../utils/constants";
 
@@ -34,7 +34,17 @@ export const AddPointModal = ({
       name,
       description,
       type: type.id,
-      coordinates
+      coordinates,
+      emission: {
+        idElement: 148,
+        idEnvironment: 4,
+        valueAvg: 20,
+        valueMax: 50,
+        year: 2019,
+        month: 11,
+        day: 21,
+        measure: 'kg/m',
+      }
     }).then(() => {
       onHide();
       setShouldFetchData(true);
@@ -44,6 +54,18 @@ export const AddPointModal = ({
   useEffect(() => {
     get(TYPE_OF_OBJECT_URL).then(({ data }) => {
       setTypes(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    get(ENVIRONMENTS_URL).then(({ data }) => {
+      console.log(data);
+    });
+    get(ELEMENTS_URL).then(({ data }) => {
+      console.log(data);
+    });
+    post(GDK_URL, { code: 101, environment: 1 }).then(({ data }) => {
+      console.log(data);
     });
   }, []);
 

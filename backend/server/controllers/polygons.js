@@ -1,6 +1,6 @@
 const pool = require('../../db-config/mysql-config');
 
-const { insertEmissionOnMap, SOURCE_POLYGON } = require('./emissions_on_map');
+const { insertEmissionOnMap, getEmissionOnMap, SOURCE_POLYGON } = require('./emissions_on_map');
 
 const mapPolygonPoints = (polygonPoints, idOfPolygon) => {
   return polygonPoints
@@ -87,27 +87,7 @@ const getPolygons = (req, res) => {
     })
     .then(mappedPolygons => {
       const mappedPolygonsPromises = mappedPolygons.map(polygon => {
-        const emissionOnMapPromise = new Promise((resolve, reject) => {
-          const emissionsOnMapTable = 'emissions_on_map';
-          const columnNames = ['idElement', 'idEnvironment', 'ValueAvg', 'ValueMax', 'Year', 'Month', 'day', 'Measure'];
-          const query = `
-            SELECT ??
-            FROM
-            ??
-            WHERE
-            ??
-            =
-            ?
-          `;
-          const values = [columnNames, emissionsOnMapTable, 'idPoligon', polygon.poligonId];
-          pool.query(query, values, (error, rows) => {
-            if (error) {
-              reject(error);
-            }
-
-            resolve(rows[0]);
-          });
-        });
+        const emissionOnMapPromise = getEmissionOnMap(SOURCE_POLYGON, polygon.poligonId);
         return emissionOnMapPromise.then(emission => ({ ...polygon, emission }));
       });
 

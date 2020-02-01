@@ -2,6 +2,8 @@ const pool = require('../../db-config/mysql-config');
 
 const iconsMap = require('../utils/iconsMap');
 
+const { getEmissionOnMap, SOURCE_POI } = require('./emissions_on_map');
+
 const getPoints = (req, res) => {
   const query = `
   SELECT 
@@ -29,28 +31,7 @@ const getPoints = (req, res) => {
 
   return pointsPromise.then(points => {
     const pointsPromises = points.map(({ Id, Type, Coord_Lat, Coord_Lng, Description, name, Object_Type_Name }) => {
-      const emissionOnMapPromise = new Promise((resolve, reject) => {
-        const emissionsOnMapTable = 'emissions_on_map';
-        const columnNames = ['idElement', 'idEnvironment', 'ValueAvg', 'ValueMax', 'Year', 'Month', 'day', 'Measure'];
-        const query = `
-          SELECT ??
-          FROM
-          ??
-          WHERE
-          ??
-          =
-          ?
-        `;
-        const values = [columnNames, emissionsOnMapTable, 'idPoi', Id];
-        pool.query(query, values, (error, rows) => {
-          if (error) {
-            reject(error);
-          }
-
-          resolve(rows[0]);
-        });
-      });
-
+      const emissionOnMapPromise = getEmissionOnMap(SOURCE_POI, Id);
       return emissionOnMapPromise.then(emission => {
         return {
           Id,

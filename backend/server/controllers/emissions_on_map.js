@@ -34,8 +34,40 @@ const insertEmissionOnMap = (source, emission) => {
   });
 };
 
+const getEmissionOnMap = (source, id) => {
+  let columnName;
+  if (source === SOURCE_POI) {
+    columnName = 'idPoi';
+  } else if (source === SOURCE_POLYGON) {
+    columnName = 'idPoligon';
+  }
+
+  return new Promise((resolve, reject) => {
+    const emissionsOnMapTable = 'emissions_on_map';
+    const columnNames = ['idElement', 'idEnvironment', 'ValueAvg', 'ValueMax', 'Year', 'Month', 'day', 'Measure'];
+    const query = `
+            SELECT ??
+            FROM
+            ??
+            WHERE
+            ??
+            =
+            ?
+          `;
+    const values = [columnNames, emissionsOnMapTable, columnName, id];
+    pool.query(query, values, (error, rows) => {
+      if (error) {
+        reject(error);
+      }
+
+      resolve(rows[0]);
+    });
+  });
+};
+
 module.exports = {
   insertEmissionOnMap,
   SOURCE_POI,
   SOURCE_POLYGON,
+  getEmissionOnMap,
 };
