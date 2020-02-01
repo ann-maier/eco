@@ -3,14 +3,13 @@ import { Link } from 'react-router-dom';
 
 import { Login } from './login';
 import Nav from 'react-bootstrap/Nav';
-import { NavDropdown } from 'react-bootstrap';
+import { Button, NavDropdown } from 'react-bootstrap';
 
-export const MenuView = () => {
-  const [user, setUser] = React.useState();
-
-  React.useEffect(() => {
-    setUser(sessionStorage.getItem('user'));
-  }, []);
+export const MenuView = ({ user, setUser }) => {
+  const logOut = () => {
+    setUser(null);
+    sessionStorage.removeItem('user');
+  };
 
   return (
     <Nav className='justify-content-between container mt-2 mb-2'>
@@ -28,9 +27,15 @@ export const MenuView = () => {
       </Nav.Item>
       <Nav.Item>
         {user ? (
-          <h1>Welcome, {user}</h1>
+          <div className='d-flex'>
+            <h3 className='mr-2'>Welcome, {user.FIO} ({user.expert_name})</h3>
+            <Button variant='outline-secondary' size='sm' onClick={() => logOut()}>
+              Log Out
+            </Button>
+          </div>
+
         ) : (
-            <Login setUser={user => setUser(user)} />
+            <Login setUser={setUser} />
           )}
       </Nav.Item>
     </Nav>

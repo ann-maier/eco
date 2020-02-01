@@ -1,16 +1,18 @@
 import React from 'react';
-import { Circle, Popup } from 'react-leaflet';
+import { Popup, Marker } from 'react-leaflet';
+import { Icon } from "leaflet/dist/leaflet-src.esm";
 
 export const Points = ({ points }) => (
   <>
     {points.map(({ Id: id, coordinates, Description: description, Image: image }) => (
-
-      <Circle key={id} center={coordinates}>
-        <img src={ "data:image/png;base64," + image} alt="Red dot" />
+      <Marker key={id} position={coordinates} icon={new Icon({
+        iconUrl: image,
+        iconSize: [20, 30],
+      })}>
         <Popup>
           {description}
         </Popup>
-      </Circle>
+      </Marker>
     ))}
   </>
 );

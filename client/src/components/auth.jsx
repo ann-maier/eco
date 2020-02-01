@@ -12,12 +12,13 @@ export const Auth = (props) => {
     post(LOGIN_URL, {
       login: login,
       password: password
-    }).then(({ data }) => {
-      alert(`Logged: ${data.success}`);
-      if (data.success) {
+    }).then(({ data: user }) => {
+      if (user) {
         props.onHide();
-        props.setUser(login);
-        sessionStorage.setItem('user', login);
+        props.setUser(user);
+        sessionStorage.setItem('user', JSON.stringify(user));
+      } else {
+        alert('Incorrect login/password');
       }
     });
   };
@@ -48,7 +49,7 @@ export const Auth = (props) => {
             </Form.Group>
             <Button variant='primary' onClick={loginUser}>
               Login
-              </Button>
+            </Button>
           </Form>
         </Col>
       </Row>
