@@ -5,6 +5,7 @@ const tableName = 'gdk';
 const getGdkElement = (req, res) => {
   const { code, environment } = req.body;
 
+  const columnNames = ['mpc_m_ot', 'mpc_avrg_d'];
   const query = `
     SELECT 
       ??
@@ -16,7 +17,7 @@ const getGdkElement = (req, res) => {
       ?? = ?
     ;`;
 
-  const values = [['mpc_m_ot', 'mpc_avrg_d'], tableName, 'code', code, 'environment', environment];
+  const values = [columnNames, tableName, 'code', code, 'environment', environment];
 
   return pool.query(query, values, (error, rows) => {
     if (error) {

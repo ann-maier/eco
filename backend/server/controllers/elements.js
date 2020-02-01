@@ -3,6 +3,7 @@ const pool = require('../../db-config/mysql-config');
 const tableName = 'elements';
 
 const getElements = (req, res) => {
+  const columnNames = ['code', 'name', 'short_name', 'measure'];
   const query = `
     SELECT 
       ??
@@ -10,7 +11,7 @@ const getElements = (req, res) => {
       ??
     ;`;
 
-  const values = [['code', 'name', 'short_name', 'measure'], tableName];
+  const values = [columnNames, tableName];
 
   return pool.query(query, values, (error, rows) => {
     if (error) {

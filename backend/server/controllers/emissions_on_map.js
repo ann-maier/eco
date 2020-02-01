@@ -36,11 +36,11 @@ const insertEmissionOnMap = (source, emission) => {
 };
 
 const getEmissionOnMap = (source, id) => {
-  let columnName;
+  let filteringColumnName;
   if (source === SOURCE_POI) {
-    columnName = 'idPoi';
+    filteringColumnName = 'idPoi';
   } else if (source === SOURCE_POLYGON) {
-    columnName = 'idPoligon';
+    filteringColumnName = 'idPoligon';
   }
 
   return new Promise((resolve, reject) => {
@@ -53,7 +53,7 @@ const getEmissionOnMap = (source, id) => {
         ??
       WHERE
         ?? = ?`;
-    const values = [columnNames, emissionsOnMapTable, columnName, id];
+    const values = [columnNames, emissionsOnMapTable, filteringColumnName, id];
     pool.query(query, values, (error, rows) => {
       if (error) {
         reject(error);
