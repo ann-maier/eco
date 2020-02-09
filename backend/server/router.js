@@ -19,8 +19,8 @@ router.post('/polygon', polygonsController.addPolygon);
 router.get('/points', pointsController.getPoints);
 
 router.post('/point', pointController.addPoint);
-
-router.post('/point', pointController.addPoint);
+router.get('/point/:id', pointController.getPoint);
+router.put('/point/:id', pointController.updatePoint);
 
 router.get('/typeofobjects', typeOfObjectController.getTypes);
 

@@ -8,4 +8,8 @@ async function get(url) {
   return axios.get(url);
 }
 
-export { post, get };
+async function put(url, body) {
+  return axios.put(url, body);
+}
+
+export { post, get, put };

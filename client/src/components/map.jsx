@@ -35,13 +35,15 @@ const initialState = {
   showPolygonModal: false,
   newPointCoordinates: [],
   newPolygonCoordinates: [],
-  shouldFetchData: true
+  shouldFetchData: true,
+  isEditPointMode: false,
+  pointId: null,
 };
 
 const buttonText = (geographicalObj, isModeEnabled) =>
-isModeEnabled
-  ? `Disable add ${geographicalObj} mode`
-  : `Add ${geographicalObj} to the map`;
+  isModeEnabled
+    ? `Disable add ${geographicalObj} mode`
+    : `Add ${geographicalObj} to the map`;
 
 export const MapView = ({ user }) => {
   const [filteredItems, setFilteredItems] = useState(initialState.filteredItems);
@@ -72,6 +74,11 @@ export const MapView = ({ user }) => {
   const [newPolygonCoordinates, setNewPolygonCoordinates] = useState(
     initialState.newPolygonCoordinates
   );
+  const [isEditPointMode, setIsEditPointMode] = useState(
+    initialState.isEditPointMode
+  );
+  const [pointId, setPointId] = useState(initialState.pointId);
+
 
   const fetchData = () => {
     get(POLYGONS_URL).then(({ data }) => {
@@ -140,7 +147,11 @@ export const MapView = ({ user }) => {
       >
         <TileLayer url={OPEN_STREET_MAP_URL} />
         <Polygons polygons={filteredPolygons} />
-        <Points points={points} />
+        <Points points={points}
+                setPointId={setPointId}
+                setIsEditPointMode={setIsEditPointMode}
+                setShowPointModal={setShowPointModal}
+        />
       </LeafletMap>
       {user && (
         <Navbar expand='lg' className='map-options'>
@@ -181,6 +192,10 @@ export const MapView = ({ user }) => {
         onHide={() => setShowPointModal(false)}
         setShouldFetchData={setShouldFetchData}
         coordinates={newPointCoordinates}
+        isEditPointMode={isEditPointMode}
+        setIsEditPointMode={setIsEditPointMode}
+        pointId={pointId}
+        setPointId={setPointId}
       />
       <AddPolygonModal
         show={showPolygonModal}

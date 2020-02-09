@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Dropdown, Form } from "react-bootstrap";
 
 import { TYPE_OF_OBJECT_URL } from "../utils/constants";
-import { post, get } from "../utils/httpService";
+import { post, get, put } from "../utils/httpService";
 import { POINT_URL } from "../utils/constants";
 
 import { VerticallyCenteredModal } from "./modal";
@@ -23,7 +23,11 @@ export const AddPointModal = ({
   onHide,
   show,
   coordinates,
-  setShouldFetchData
+  setShouldFetchData,
+  isEditPointMode,
+  setIsEditPointMode,
+  pointId,
+  setPointId
 }) => {
   const [name, setName] = useState(initialState.form.name);
   const [description, setDescription] = useState(initialState.form.description);
@@ -50,11 +54,39 @@ export const AddPointModal = ({
     });
   };
 
+  const editPoint = emission => {
+    put(`${POINT_URL}/${pointId}`, {
+      name,
+      description,
+      type: type.id,
+      emission
+    }).then(() => {
+      clearForm();
+      onHide();
+      setShouldFetchData(true);
+      setIsEditPointMode(false);
+      setPointId(null);
+    });
+  };
+
   useEffect(() => {
     get(TYPE_OF_OBJECT_URL).then(({ data }) => {
       setTypes(data);
     });
   }, []);
+
+  useEffect(() => {
+    if (isEditPointMode && pointId) {
+      get(`${POINT_URL}/${pointId}`).then(({ data }) => {
+        const type = types.find(({ id }) => id === data.type);
+        if (type) {
+          setType(type);
+        }
+        setName(data.name);
+        setDescription(data.description);
+      })
+    }
+  }, [pointId, isEditPointMode]);
 
   return (
     <VerticallyCenteredModal size='sm' show={show} onHide={onHide}>
@@ -98,7 +130,10 @@ export const AddPointModal = ({
           />
         </Form.Group>
 
-        <SubmitForm onSave={addPoint} />
+        {isEditPointMode
+          ? <SubmitForm onSave={editPoint} />
+          : <SubmitForm onSave={addPoint} />
+        }
       </Form>
     </VerticallyCenteredModal>
   );
