@@ -62,7 +62,7 @@ const getPoint = (req, res) => {
 
   return poiPromise
     .then(poi => res.send(poi))
-    .catch(error => res.status(500).send({message: error}));
+    .catch(error => res.status(500).send({ message: error }));
 };
 
 const updatePoint = (req, res) => {
@@ -112,11 +112,7 @@ const updatePoint = (req, res) => {
       }
     })
     .then(() => res.sendStatus(200))
-    .catch(error => {
-      res.status(500).send({
-        message: error
-      });
-    });
+    .catch(error => res.status(500).send({ message: error }));
 };
 
 module.exports = {

@@ -4,13 +4,18 @@ import { Button, Dropdown, Form, Alert } from "react-bootstrap";
 import { ELEMENTS_URL, ENVIRONMENTS_URL, GDK_URL } from "../utils/constants";
 import { post, get } from "../utils/httpService";
 
+const now = new Date();
+const year = now.getFullYear();
+const month = ('0' + (now.getMonth() + 1)).slice(-2);
+const day = ('0' + now.getDate()).slice(-2);
+
 const initialState = {
     form: {
         environment: {
             id: 4,
             name: 'Please select environment'
         },
-        date: new Date(),
+        date: now,
         valueAvg: 0,
         valueMax: 0,
         gdk: 100000,
@@ -54,20 +59,23 @@ export const SubmitForm = ({ onSave }) => {
     }
 
     const handleSubmit = () => {
-        const [year, month, day] = date.split('-');
-        const emission =
-            isActive
-                ? {
-                    valueAvg,
-                    valueMax,
-                    year,
-                    month,
-                    day,
-                    idElement: selectedElement.code,
-                    idEnvironment: selectedEnvironment.id,
-                    measure,
-                }
-                : undefined;
+        let emission;
+
+        if (isActive && date) {
+            const [year, month, day] = date.split('-');
+
+            emission = isActive && {
+                valueAvg,
+                valueMax,
+                year,
+                month,
+                day,
+                idElement: selectedElement.code,
+                idEnvironment: selectedEnvironment.id,
+                measure,
+            };
+
+        }
 
         onSave(emission);
         clearForm();
@@ -80,13 +88,21 @@ export const SubmitForm = ({ onSave }) => {
         post(GDK_URL, { code: element.code, environment: selectedEnvironment.id })
             .then(({ data }) => {
                 if (data.average && data.max) {
-                  setGdkAvg(data.average);
-                  setGdkMax(data.max);
+                    setGdkAvg(data.average);
+                    setGdkMax(data.max);
                 } else {
-                  setGdkAvg(initialState.form.valueAvg);
-                  setGdkMax(initialState.form.valueMax);
+                    setGdkAvg(initialState.form.valueAvg);
+                    setGdkMax(initialState.form.valueMax);
                 }
             })
+    }
+
+    const handleDate = e => {
+        if (new Date(e.target.value) > now) {
+            setDate(`${year}-${month}-${day}`);
+        } else {
+            setDate(e.target.value);
+        }
     }
 
     useEffect(() => {
@@ -125,7 +141,7 @@ export const SubmitForm = ({ onSave }) => {
                         <Form.Control
                             type='date'
                             value={date}
-                            onChange={e => setDate(e.target.value)}
+                            onChange={handleDate}
                         />
                     </Form.Group>
 
@@ -133,6 +149,7 @@ export const SubmitForm = ({ onSave }) => {
                         <Form.Label>Enter average value</Form.Label>
                         <Form.Control
                             type='number'
+                            min='0'
                             value={valueAvg}
                             onChange={e => setAvgValue(+e.target.value)}
                         />
@@ -143,6 +160,7 @@ export const SubmitForm = ({ onSave }) => {
                         <Form.Label>Enter max value</Form.Label>
                         <Form.Control
                             type='number'
+                            min='0'
                             value={valueMax}
                             onChange={e => setMaxValue(+e.target.value)}
                         />

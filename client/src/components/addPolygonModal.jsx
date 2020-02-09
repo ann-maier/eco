@@ -53,7 +53,6 @@ export const AddPolygonModal = ({
   useEffect(() => {
     if (polygonId && isEditPolygonMode) {
       get(`${POLYGON_URL}/${polygonId}`).then(({ data }) => {
-        console.log(data);
         setLineThickness(data.line_thickness);
         setColor({
           r: data.brush_color_r,

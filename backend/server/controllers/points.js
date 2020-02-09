@@ -2,7 +2,7 @@ const pool = require('../../db-config/mysql-config');
 
 const iconsMap = require('../utils/iconsMap');
 
-const { getEmissionOnMap, SOURCE_POI } = require('./emissions_on_map');
+const { getEmissionsOnMap, SOURCE_POI } = require('./emissions_on_map');
 
 const getPoints = (req, res) => {
   const query = `
@@ -31,8 +31,8 @@ const getPoints = (req, res) => {
 
   return pointsPromise.then(points => {
     const pointsPromises = points.map(({ Id, Type, Coord_Lat, Coord_Lng, Description, name, Object_Type_Name }) => {
-      const emissionOnMapPromise = getEmissionOnMap(SOURCE_POI, Id);
-      return emissionOnMapPromise.then(emission => {
+      const emissionsOnMapPromise = getEmissionsOnMap(SOURCE_POI, Id);
+      return emissionsOnMapPromise.then(emissions => {
         return {
           Id,
           coordinates: [Coord_Lat, Coord_Lng],
@@ -40,7 +40,7 @@ const getPoints = (req, res) => {
           name,
           Image: iconsMap.get(+Type),
           Object_Type_Name,
-          emission,
+          emissions,
         };
       });
     });

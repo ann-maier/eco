@@ -1,6 +1,6 @@
 const pool = require('../../db-config/mysql-config');
 
-const { insertEmissionOnMap, getEmissionOnMap, SOURCE_POLYGON } = require('./emissions_on_map');
+const { insertEmissionOnMap, getEmissionsOnMap, SOURCE_POLYGON } = require('./emissions_on_map');
 
 const mapPolygonPoints = (polygonPoints, idOfPolygon) => {
   return polygonPoints
@@ -87,8 +87,8 @@ const getPolygons = (req, res) => {
     })
     .then(mappedPolygons => {
       const mappedPolygonsPromises = mappedPolygons.map(polygon => {
-        const emissionOnMapPromise = getEmissionOnMap(SOURCE_POLYGON, polygon.poligonId);
-        return emissionOnMapPromise.then(emission => ({ ...polygon, emission }));
+        const emissionsOnMapPromise = getEmissionsOnMap(SOURCE_POLYGON, polygon.poligonId);
+        return emissionsOnMapPromise.then(emissions => ({ ...polygon, emissions }));
       });
 
       return Promise.all(mappedPolygonsPromises).then(polygons => res.send(polygons));
@@ -298,16 +298,12 @@ const updatePolygon = (req, res) => {
   return polygonPromise
     .then(() => {
       if (!!emission) {
-        emission.idPoi = +id;
+        emission.idPolygon = +id;
         return insertEmissionOnMap(SOURCE_POLYGON, emission);
       }
     })
     .then(() => res.sendStatus(200))
-    .catch(error => {
-      res.status(500).send({
-        message: error
-      });
-    });
+    .catch(error => res.status(500).send({ message: error }));
 };
 
 module.exports = {

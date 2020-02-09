@@ -35,7 +35,7 @@ const insertEmissionOnMap = (source, emission) => {
   });
 };
 
-const getEmissionOnMap = (source, id) => {
+const getEmissionsOnMap = (source, id) => {
   let filteringColumnName;
   if (source === SOURCE_POI) {
     filteringColumnName = 'idPoi';
@@ -59,7 +59,7 @@ const getEmissionOnMap = (source, id) => {
         reject(error);
       }
 
-      resolve(rows[0]);
+      resolve(rows);
     });
   });
 };
@@ -68,5 +68,5 @@ module.exports = {
   insertEmissionOnMap,
   SOURCE_POI,
   SOURCE_POLYGON,
-  getEmissionOnMap,
+  getEmissionsOnMap,
 };
