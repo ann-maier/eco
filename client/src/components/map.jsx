@@ -38,6 +38,8 @@ const initialState = {
   shouldFetchData: true,
   isEditPointMode: false,
   pointId: null,
+  isEditPolygonMode: false,
+  polygonId: null,
 };
 
 const buttonText = (geographicalObj, isModeEnabled) =>
@@ -74,10 +76,20 @@ export const MapView = ({ user }) => {
   const [newPolygonCoordinates, setNewPolygonCoordinates] = useState(
     initialState.newPolygonCoordinates
   );
+
+  // edit point
   const [isEditPointMode, setIsEditPointMode] = useState(
     initialState.isEditPointMode
   );
   const [pointId, setPointId] = useState(initialState.pointId);
+
+  //edit polygon
+  const [isEditPolygonMode, setIsEditPolygonMode] = useState(
+    initialState.isEditPolygonMode
+  );
+  const [polygonId, setPolygonId] = useState(
+    initialState.polygonId
+  );
 
 
   const fetchData = () => {
@@ -146,11 +158,17 @@ export const MapView = ({ user }) => {
         onClick={addGeographicalObjectToMap}
       >
         <TileLayer url={OPEN_STREET_MAP_URL} />
-        <Polygons polygons={filteredPolygons} />
-        <Points points={points}
-                setPointId={setPointId}
-                setIsEditPointMode={setIsEditPointMode}
-                setShowPointModal={setShowPointModal}
+        <Polygons
+          polygons={filteredPolygons}
+          setPolygonId={setPolygonId}
+          setIsEditPolygonMode={setIsEditPolygonMode}
+          setShowPolygonModal={setShowPolygonModal}
+        />
+        <Points
+          points={points}
+          setPointId={setPointId}
+          setIsEditPointMode={setIsEditPointMode}
+          setShowPointModal={setShowPointModal}
         />
       </LeafletMap>
       {user && (
@@ -204,6 +222,10 @@ export const MapView = ({ user }) => {
         setNewPolygonCoordinates={setNewPolygonCoordinates}
         coordinates={newPolygonCoordinates}
         user={user}
+        isEditPolygonMode={isEditPolygonMode}
+        setIsEditPolygonMode={setIsEditPolygonMode}
+        polygonId={polygonId}
+        setPolygonId={setPolygonId}
       />
     </>
   );

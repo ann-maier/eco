@@ -51,7 +51,7 @@ export const AddPointModal = ({
       clearForm();
       onHide();
       setShouldFetchData(true);
-    });
+    }).catch(() => setShouldFetchData(false))
   };
 
   const editPoint = emission => {
@@ -66,7 +66,11 @@ export const AddPointModal = ({
       setShouldFetchData(true);
       setIsEditPointMode(false);
       setPointId(null);
-    });
+    }).catch(() => {
+      setShouldFetchData(false);
+      setIsEditPointMode(false);
+      setPointId(null);
+    })
   };
 
   useEffect(() => {

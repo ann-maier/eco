@@ -3,8 +3,7 @@ import { Popup, Marker } from 'react-leaflet';
 import { Icon } from "leaflet/dist/leaflet-src.esm";
 
 export const Points = ({ points, setShowPointModal, setPointId, setIsEditPointMode }) => {
-  const handleClick = (coordinates, id) => {
-    console.log(coordinates);
+  const handleClick = id => {
     setPointId(id);
     setIsEditPointMode(true);
     setShowPointModal(true)
@@ -16,7 +15,7 @@ export const Points = ({ points, setShowPointModal, setPointId, setIsEditPointMo
         <Marker key={id} position={coordinates} icon={new Icon({
           iconUrl: image,
           iconSize: [20, 30],
-        })} onClick={() => handleClick(coordinates, id)}
+        })} onClick={() => handleClick(id)}
         >
           <Popup>
             {description}

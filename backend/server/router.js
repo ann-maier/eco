@@ -15,6 +15,8 @@ router.post('/login', authController.login);
 
 router.get('/polygons', polygonsController.getPolygons);
 router.post('/polygon', polygonsController.addPolygon);
+router.get('/polygon/:id', polygonsController.getPolygon);
+router.put('/polygon/:id', polygonsController.updatePolygon);
 
 router.get('/points', pointsController.getPoints);
 
