@@ -19,7 +19,7 @@ const getEmissionsCalculations = (req, res) => {
       experts.emissions_on_map
     INNER JOIN elements ON emissions_on_map.idElement = elements.code
     LEFT JOIN gdk ON emissions_on_map.idElement = gdk.code AND emissions_on_map.idEnvironment = gdk.environment
-    WHERE ${ typeOfObject} = ${id}
+    WHERE ${typeOfObject} = ${id}
     GROUP BY idEnvironment, idElement;
   `;
 
