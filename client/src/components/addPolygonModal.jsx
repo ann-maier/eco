@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { SketchPicker } from "react-color";
-import { Button, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
-import { post } from "../utils/httpService";
+import { post, get, put } from "../utils/httpService";
 import { POLYGON_URL } from "../utils/constants";
 
 import { VerticallyCenteredModal } from "./modal";
+import { SubmitForm } from './submitForm';
+import { useEffect } from 'react';
 
 const initialState = {
   form: {
@@ -28,7 +30,11 @@ export const AddPolygonModal = ({
   coordinates,
   setShouldFetchData,
   setNewPolygonCoordinates,
-  user
+  user,
+  isEditPolygonMode,
+  setIsEditPolygonMode,
+  polygonId,
+  setPolygonId,
 }) => {
   const [lineThickness, setLineThickness] = useState(
     initialState.form.lineThickness
@@ -37,8 +43,30 @@ export const AddPolygonModal = ({
   const [name, setName] = useState(initialState.form.name);
   const [description, setDescription] = useState(initialState.form.description);
 
+  const clearForm = () => {
+    setLineThickness(initialState.form.lineThickness);
+    setColor(initialState.form.brushColor);
+    setName(initialState.form.name);
+    setDescription(initialState.form.description);
+  };
 
-  const addPolygon = () => {
+  useEffect(() => {
+    if (polygonId && isEditPolygonMode) {
+      get(`${POLYGON_URL}/${polygonId}`).then(({ data }) => {
+        setLineThickness(data.line_thickness);
+        setColor({
+          r: data.brush_color_r,
+          g: data.bruch_color_g,
+          b: data.brush_color_b,
+          a: data.brush_alfa
+        });
+        setName(data.name);
+        setDescription(data.description);
+      });
+    }
+  }, [polygonId, isEditPolygonMode]);
+
+  const addPolygon = emission => {
     post(POLYGON_URL, {
       brush_color_r: color.r,
       bruch_color_g: color.g,
@@ -57,9 +85,11 @@ export const AddPolygonModal = ({
         latitude: point.lat,
         longitude: point.lng,
         order123: index
-      }))
+      })),
+      emission
     })
       .then(() => {
+        clearForm();
         onHide();
         setNewPolygonCoordinates([]);
         setShouldFetchData(true);
@@ -70,8 +100,35 @@ export const AddPolygonModal = ({
       });
   };
 
-  const handleChangeComplete = ({ rgb }) => {
-    setColor(rgb);
+  const editPolygon = emission => {
+    put(`${POLYGON_URL}/${polygonId}`, {
+      brush_color_r: color.r,
+      bruch_color_g: color.g,
+      brush_color_b: color.b,
+      brush_alfa: color.a,
+      line_collor_r: color.r,
+      line_color_g: color.g,
+      line_color_b: color.b,
+      line_alfa: color.a,
+      line_thickness: Number(lineThickness),
+      name,
+      description,
+      emission
+    })
+      .then(() => {
+        clearForm();
+        onHide();
+        setNewPolygonCoordinates([]);
+        setShouldFetchData(true);
+        setIsEditPolygonMode(false);
+        setPolygonId(null);
+      })
+      .catch(() => {
+        setIsEditPolygonMode(false);
+        setPolygonId(null);
+        setNewPolygonCoordinates([]);
+        setShouldFetchData(false);
+      });
   };
 
   return (
@@ -87,7 +144,7 @@ export const AddPolygonModal = ({
             onChange={e => setLineThickness(e.target.value)}
           />
           <br />
-          <SketchPicker color={color} onChangeComplete={handleChangeComplete} />
+          <SketchPicker color={color} onChangeComplete={({ rgb }) => setColor(rgb)} />
         </Form.Group>
 
         <Form.Group>
@@ -108,10 +165,11 @@ export const AddPolygonModal = ({
             onChange={e => setDescription(e.target.value)}
           />
         </Form.Group>
-
-        <Button variant='outline-primary' onClick={addPolygon}>
-          Save polygon
-        </Button>
+        {
+          isEditPolygonMode
+            ? <SubmitForm onSave={editPolygon} />
+            : <SubmitForm onSave={addPolygon} />
+        }
       </Form>
     </VerticallyCenteredModal>
   );

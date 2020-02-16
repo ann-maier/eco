@@ -1,7 +1,8 @@
 const pool = require('../../db-config/mysql-config');
+const { insertEmissionOnMap, SOURCE_POI } = require('./emissions_on_map');
 
 const addPoint = (req, res) => {
-  const { name, type, coordinates, description } = req.body;
+  const { name, type, coordinates, description, emission } = req.body;
 
   const query = `
   INSERT INTO poi 
@@ -14,20 +15,108 @@ const addPoint = (req, res) => {
       if (error) {
         reject(error);
       }
-
-      resolve();
+      resolve(+rows.insertId);
     });
   });
 
-  return pointPromise.then(() => {
-    res.sendStatus(200);
-  }).catch(error => {
+  return pointPromise.then((insertedId) => {
+    if (!!emission) {
+      emission.idPoi = insertedId;
+      return insertEmissionOnMap(SOURCE_POI, emission);
+    }
+  })
+  .then(() => res.sendStatus(200))
+  .catch(error => {
     res.status(500).send({
       message: error
     })
   });
 };
 
+const getPoint = (req, res) => {
+  const id = req.params.id;
+  const poiPromise = new Promise((resolve, reject) => {
+    const tableName = 'poi';
+
+    const query = `
+      SELECT
+      ??
+      FROM
+      ??
+      WHERE
+      ?? = ?
+    `;
+
+    const values = [['name', 'type', 'description', 'Name_object'], tableName, 'Id', id];
+
+    pool.query(query, values, (error, rows) => {
+      if (error) {
+        reject(error);
+      }
+
+      if (rows[0]) {
+        resolve(rows[0]);
+      }
+    })
+  });
+
+  return poiPromise
+    .then(poi => res.send(poi))
+    .catch(error => res.status(500).send({ message: error }));
+};
+
+const updatePoint = (req, res) => {
+  const id = req.params.id;
+  const {
+    name,
+    description,
+    type,
+    emission
+  } = req.body;
+
+  const poiPromise = new Promise((resolve, reject) => {
+    const tableName = 'poi';
+    const updatedValues = {
+      name,
+      description,
+      type
+    };
+
+    const query = `
+      UPDATE
+      ??
+      SET
+      ?
+      WHERE
+      ?? = ?
+    `;
+
+    const values = [tableName, updatedValues, 'Id', id];
+
+    pool.query(query, values, (error, rows) => {
+      if (error) {
+        reject(error);
+      }
+
+      if (rows) {
+        resolve();
+      }
+    })
+  });
+
+  return poiPromise
+    .then(() => {
+      if (!!emission) {
+        emission.idPoi = +id;
+        return insertEmissionOnMap(SOURCE_POI, emission);
+      }
+    })
+    .then(() => res.sendStatus(200))
+    .catch(error => res.status(500).send({ message: error }));
+};
+
 module.exports = {
-  addPoint
+  addPoint,
+  getPoint,
+  updatePoint,
 };

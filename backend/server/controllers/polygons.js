@@ -1,5 +1,7 @@
 const pool = require('../../db-config/mysql-config');
 
+const { insertEmissionOnMap, getEmissionsOnMap, SOURCE_POLYGON } = require('./emissions_on_map');
+
 const mapPolygonPoints = (polygonPoints, idOfPolygon) => {
   return polygonPoints
     .filter(({ Id_of_poligon }) => Id_of_poligon === idOfPolygon)
@@ -47,7 +49,7 @@ const getPolygons = (req, res) => {
     });
   });
 
-  const queryGetPolygonPointsPromise = new Promise((resolve, reject) => {
+  const getPolygonPointsPromise = new Promise((resolve, reject) => {
     pool.query(queryGetPolygonPoints, (error, polygonPoints) => {
       if (error) {
         reject(error);
@@ -57,9 +59,9 @@ const getPolygons = (req, res) => {
     });
   });
 
-  return Promise.all([getPolygonsPromise, queryGetPolygonPointsPromise])
+  return Promise.all([getPolygonsPromise, getPolygonPointsPromise])
     .then(([polygons, polygonPoints]) => {
-      const mappedPolygons = polygons.map((polygon) => {
+      return polygons.map((polygon) => {
         const mappedPolygonPoints = mapPolygonPoints(
           polygonPoints,
           polygon.id_of_poligon
@@ -82,8 +84,14 @@ const getPolygons = (req, res) => {
           idOfExpert: polygon.id_of_expert
         };
       });
+    })
+    .then(mappedPolygons => {
+      const mappedPolygonsPromises = mappedPolygons.map(polygon => {
+        const emissionsOnMapPromise = getEmissionsOnMap(SOURCE_POLYGON, polygon.poligonId);
+        return emissionsOnMapPromise.then(emissions => ({ ...polygon, emissions }));
+      });
 
-      return res.send(mappedPolygons);
+      return Promise.all(mappedPolygonsPromises).then(polygons => res.send(polygons));
     })
     .catch((error) => {
       res.status(500).send({
@@ -112,7 +120,7 @@ const addPolygon = (req, res) => {
   lastIdPromise
     .then((maxId) => {
       const id = maxId + 1;
-      const { points, ...values } = req.body;
+      const { points, emission, ...values } = req.body;
 
       const insertPolygonPromise = new Promise((resolve, reject) => {
         const insertPolygonQuery = `
@@ -130,14 +138,25 @@ const addPolygon = (req, res) => {
               reject(error);
             }
 
-            resolve();
+            resolve(id);
           }
         );
       });
 
-      return insertPolygonPromise.then(() => ({ points, id }));
+      return insertPolygonPromise.then((id) => id);
     })
-    .then(({ points, id }) => {
+    .then((id) => {
+      const { emission } = req.body;
+
+      if (!!emission) {
+        emission.idPolygon = id;
+        return insertEmissionOnMap(SOURCE_POLYGON, emission).then(() => id);
+      }
+
+      return id;
+    })
+    .then((id) => {
+      const { points } = req.body;
       const insertPolygonPointsPromises = points.map(
         ({ latitude, longitude, order123 }) => {
           return new Promise((resolve, reject) => {
@@ -174,7 +193,122 @@ const addPolygon = (req, res) => {
     });
 };
 
+const getPolygon = (req, res) => {
+  const id = req.params.id;
+  const polygonPromise = new Promise((resolve, reject) => {
+    const tableName = 'poligon';
+
+    const query = `
+      SELECT
+      ??
+      FROM
+      ??
+      WHERE
+      ?? = ?
+    `;
+
+    const values = [
+      [
+        'brush_color_r',
+        'bruch_color_g',
+        'brush_color_b',
+        'brush_alfa',
+        'line_collor_r',
+        'line_color_g',
+        'line_color_b',
+        'line_alfa',
+        'line_thickness',
+        'name',
+        'id_of_expert',
+        'type',
+        'description',
+      ], tableName, 'Id_of_poligon', id];
+
+    pool.query(query, values, (error, rows) => {
+      if (error) {
+        reject(error);
+      }
+
+      if (rows[0]) {
+        resolve(rows[0]);
+      }
+    })
+  });
+
+  return polygonPromise
+    .then(polygon => res.send(polygon))
+    .catch(error => res.status(500).send({ message: error }));
+};
+
+const updatePolygon = (req, res) => {
+  const id = req.params.id;
+  const {
+    brush_color_r,
+    bruch_color_g,
+    brush_color_b,
+    brush_alfa,
+    line_collor_r,
+    line_color_g,
+    line_color_b,
+    line_alfa,
+    line_thickness,
+    name,
+    description,
+    emission
+  } = req.body;
+
+  const polygonPromise = new Promise((resolve, reject) => {
+    const tableName = 'poligon';
+    const updatedValues = {
+      brush_color_r,
+      bruch_color_g,
+      brush_color_b,
+      brush_alfa,
+      line_collor_r,
+      line_color_g,
+      line_color_b,
+      line_alfa,
+      line_thickness,
+      name,
+      description,
+    };
+
+    const query = `
+      UPDATE
+      ??
+      SET
+      ?
+      WHERE
+      ?? = ?
+    `;
+
+    const values = [tableName, updatedValues, 'Id_of_poligon', id];
+
+    pool.query(query, values, (error, rows) => {
+      if (error) {
+        reject(error);
+      }
+
+      if (rows) {
+        resolve();
+      }
+    })
+  });
+
+  return polygonPromise
+    .then(() => {
+      if (!!emission) {
+        emission.idPolygon = +id;
+        return insertEmissionOnMap(SOURCE_POLYGON, emission);
+      }
+    })
+    .then(() => res.sendStatus(200))
+    .catch(error => res.status(500).send({ message: error }));
+};
+
 module.exports = {
   getPolygons,
-  addPolygon
+  addPolygon,
+  getPolygon,
+  updatePolygon,
 };
