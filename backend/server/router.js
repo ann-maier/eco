@@ -10,6 +10,7 @@ const expertsController = require('./controllers/experts');
 const environmentsController = require('./controllers/environments');
 const elementsController = require('./controllers/elements');
 const gdkController = require('./controllers/gdk');
+const emissionsCalculationsController = require('./controllers/emissionsCalculations');
 
 router.post('/login', authController.login);
 
@@ -34,4 +35,5 @@ router.get('/elements', elementsController.getElements);
 
 router.post('/gdk', gdkController.getGdkElement);
 
+router.get('/emissionscalculations', emissionsCalculationsController.getEmissionsCalculations);
 module.exports = router;

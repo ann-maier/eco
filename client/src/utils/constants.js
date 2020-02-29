@@ -8,6 +8,7 @@ export const EXPERTS_URL = 'http://localhost:8080/experts';
 export const ENVIRONMENTS_URL = 'http://localhost:8080/environments';
 export const ELEMENTS_URL = 'http://localhost:8080/elements';
 export const GDK_URL = 'http://localhost:8080/gdk';
+export const EMISSIONS_CALCULATIONS_URL = 'http://localhost:8080/emissionscalculations';
 
 export const MAP_CENTER_COORDS = [49.0139, 31.2858];
 export const OPEN_STREET_MAP_URL = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
