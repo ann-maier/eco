@@ -3,6 +3,7 @@ import { Table } from 'react-bootstrap';
 
 import { VerticallyCenteredModal } from "./modal";
 import { Chart } from "./chart";
+import { EmissionsBarChart } from "./emissionsBarChart";
 
 import "./emissionsChartModal.css";
 
@@ -12,6 +13,7 @@ const emptyState = 'Немає даних';
 export const EmissionsChartModal = ({
     onHide,
     show,
+    emissions,
     emissionCalculations
 }) => {
     const chartAverageData = emissionCalculations?.length > 0 ? emissionCalculations.map(emission => ({
@@ -70,6 +72,7 @@ export const EmissionsChartModal = ({
                     )}
                 </tbody>
             </Table>
+            <EmissionsBarChart emissions={emissions} />
             <h3>Сума average викидів</h3>
             <Chart data={chartAverageData} />
             <h3>Сума max викидів</h3>
