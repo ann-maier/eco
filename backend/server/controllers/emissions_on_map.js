@@ -45,12 +45,19 @@ const getEmissionsOnMap = (source, id) => {
 
   return new Promise((resolve, reject) => {
     const emissionsOnMapTable = 'emissions_on_map';
-    const columnNames = ['idElement', 'idEnvironment', 'ValueAvg', 'ValueMax', 'Year', 'Month', 'day', 'Measure'];
+    const columnNames = ['idElement', 'idEnvironment', 'ValueAvg', 'ValueMax', 'Year', 'Month', 'day', 'emissions_on_map.Measure', 'elements.short_name', 'environment.name'];
     const query = `
       SELECT
-       ??
+      ??
       FROM
-        ??
+      ??
+      INNER JOIN
+        elements
+      ON
+        elements.code = emissions_on_map.idElement
+      INNER JOIN environment
+      ON
+        environment.id = emissions_on_map.idEnvironment
       WHERE
         ?? = ?`;
     const values = [columnNames, emissionsOnMapTable, filteringColumnName, id];

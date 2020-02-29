@@ -1,5 +1,5 @@
 .filtration-form {
-    z-index: 9999;
+    z-index: 1040;
     position: absolute;
     top: calc(100vh / 3);
     background: #fff;

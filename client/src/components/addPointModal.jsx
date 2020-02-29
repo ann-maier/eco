@@ -19,6 +19,10 @@ const initialState = {
   }
 };
 
+const emptyState = {
+  typeOfObject: 'Choose type of object'
+};
+
 export const AddPointModal = ({
   onHide,
   show,
@@ -73,6 +77,13 @@ export const AddPointModal = ({
     })
   };
 
+  const hide = () => {
+    if (!isEditPointMode) {
+      clearForm();
+    }
+    onHide();
+  };
+
   useEffect(() => {
     get(TYPE_OF_OBJECT_URL).then(({ data }) => {
       setTypes(data);
@@ -93,12 +104,12 @@ export const AddPointModal = ({
   }, [pointId, isEditPointMode]);
 
   return (
-    <VerticallyCenteredModal size='sm' show={show} onHide={onHide}>
+    <VerticallyCenteredModal size='lg' show={show} onHide={() => hide()}>
       <Form>
         <Form.Group>
           <Dropdown>
             <Dropdown.Toggle size='sm' variant='success'>
-              Choose type of object
+              {type.name || emptyState.typeOfObject}
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
