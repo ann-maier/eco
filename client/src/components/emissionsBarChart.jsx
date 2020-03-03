@@ -2,7 +2,7 @@ import React from 'react';
 import { Dropdown } from "react-bootstrap";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
-import { transformEmissions, formatMonthDataForBarChart } from '../utils/helpers';
+import { transformEmissions, formatMonthDataForBarChart, getElementName } from '../utils/helpers';
 
 const initialState = {
     select: {
@@ -31,8 +31,10 @@ export const EmissionsBarChart = ({ emissions }) => {
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
-                        {transformedEmissions && Object.keys(transformedEmissions).map(emissionId => (
-                            <Dropdown.Item
+                        {transformedEmissions && Object.keys(transformedEmissions).map(emissionId => {
+                            const [elementName] = getElementName(emissions, emissionId)
+
+                            return <Dropdown.Item
                                 key={emissionId}
                                 active={elementId === emissionId}
                                 onClick={() => {
@@ -40,9 +42,9 @@ export const EmissionsBarChart = ({ emissions }) => {
                                     setYear(initialState.select.year)
                                 }}
                             >
-                                {emissionId}
+                                {elementName}
                             </Dropdown.Item>
-                        ))}
+                        })}
                     </Dropdown.Menu>
                 </Dropdown>
                 {elementId && <Dropdown>

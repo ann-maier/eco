@@ -54,3 +54,11 @@ export const formatMonthDataForBarChart = (
     average: transformedEmissions[elementId][year][month].avg,
     max: transformedEmissions[elementId][year][month].max
   }));
+
+export const getElementName = (emissions, emissionId) => [
+  ...new Set(
+    emissions
+      .filter(({ idElement }) => Number(emissionId) === idElement)
+      .map(({ short_name }) => short_name)
+  )
+];
