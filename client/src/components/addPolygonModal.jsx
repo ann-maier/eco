@@ -131,8 +131,15 @@ export const AddPolygonModal = ({
       });
   };
 
+  const hide = () => {
+    if (!isEditPolygonMode) {
+      clearForm();
+    }
+    onHide();
+  };
+
   return (
-    <VerticallyCenteredModal size='sm' show={show} onHide={onHide}>
+    <VerticallyCenteredModal size='lg' show={show} onHide={() => hide()}>
       <Form>
         <Form.Group>
           <Form.Label>

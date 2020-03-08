@@ -4,7 +4,7 @@ import { Button, Modal } from 'react-bootstrap';
 export const VerticallyCenteredModal = (props) => (
   <Modal
     {...props}
-    size='lg'
+    size={props.size || 'lg'}
     aria-labelledby='contained-modal-title-vcenter'
     centered
   >
