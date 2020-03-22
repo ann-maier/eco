@@ -1,19 +1,31 @@
 const { PUBLIC_IMAGES_URL } = require('./constants');
+const pool = require('../../db-config/mysql-config');
 
-const iconsMap = new Map([
-  [1, `${PUBLIC_IMAGES_URL}/tez.png`],
-  [2, `${PUBLIC_IMAGES_URL}/farm_caw.png`],
-  [3, `${PUBLIC_IMAGES_URL}/car_wash.png`],
-  [4, `${PUBLIC_IMAGES_URL}/museum.png`],
-  [5, `${PUBLIC_IMAGES_URL}/sand.png`],
-  [6, `${PUBLIC_IMAGES_URL}/warrior.png`],
-  [7, `${PUBLIC_IMAGES_URL}/carrier.png`],
-  [8, `${PUBLIC_IMAGES_URL}/parking.png`],
-  [9, `${PUBLIC_IMAGES_URL}/zoo.png`],
-  [10, `${PUBLIC_IMAGES_URL}/buhanka.png`],
-  [11, `${PUBLIC_IMAGES_URL}/court.png`],
-  [12, `${PUBLIC_IMAGES_URL}/health.png`],
-  [13, `${PUBLIC_IMAGES_URL}/bread_backing2.png`],
-]);
+const tableName = 'type_of_object';
 
-module.exports = iconsMap;
+const getImages = () => {
+  const columnNames = ['id', 'Image_Name'];
+  const query = `
+    SELECT 
+      ??
+    FROM 
+      ??
+    ;`;
+
+  const values = [columnNames, tableName];
+
+  return new Promise((resolve, reject) => {
+    pool.query(query, values, (error, rows) => {
+      if (error) {
+        reject(error);
+      }
+
+      const mappedIcons = rows.map(({ id, Image_Name }) => [id, `${PUBLIC_IMAGES_URL}/${Image_Name}`]);
+
+      resolve(new Map(mappedIcons));
+    });
+  });
+
+};
+
+module.exports = getImages;
