@@ -3,15 +3,14 @@ const pool = require('../../db-config/mysql-config');
 const tableName = 'environment';
 
 const getEnvironments = (req, res) => {
-  const columnNames = ['*'];
   const query = `
     SELECT 
-      ??
+      *
     FROM 
       ??
     ;`;
 
-  const values = [columnNames, tableName];
+  const values = [tableName];
 
   return pool.query(query, values, (error, rows) => {
     if (error) {
