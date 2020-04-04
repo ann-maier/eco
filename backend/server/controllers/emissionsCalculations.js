@@ -1,17 +1,16 @@
-const pool = require('../../db-config/mysql-config');
+const pool = require("../../db-config/mysql-config");
 
 const getEmissionsCalculations = (req, res) => {
   const { idPoi, idPolygon } = req.query;
-  const typeOfObject = idPoi ? 'idPoi' : 'idPoligon';
+  const typeOfObject = idPoi ? "idPoi" : "idPoligon";
   const id = idPoi || idPolygon;
 
   const query = `
     SELECT
       elements.short_name,
+      idEnvironment,
       AVG(ValueAvg) AS averageFromAverageEmissions,
-      AVG(ValueMax) AS averageFromMaximumEmissions,
-      SUM(ValueAvg) AS sumFromAverageEmissions,
-      SUM(ValueMax) AS sumFromMaximumEmissions,
+      MAX(ValueMax) AS maxFromMaximumEmissions,
       elements.Measure,
       gdk.mpc_avrg_d,
       gdk.mpc_m_ot
@@ -26,41 +25,40 @@ const getEmissionsCalculations = (req, res) => {
   return pool.query(query, [], (error, rows) => {
     if (error) {
       return res.status(500).send({
-        message: error
+        message: error,
       });
     }
 
-    const response = rows.map(({
-      short_name: shortName,
-      averageFromAverageEmissions,
-      averageFromMaximumEmissions,
-      sumFromAverageEmissions,
-      sumFromMaximumEmissions,
-      mpc_avrg_d: gdkAverage,
-      mpc_m_ot: gdkMax,
-      Measure: measure,
-    }) => {
-      return {
-        element: shortName,
-        averageCalculations: {
-          average: averageFromAverageEmissions,
-          sumFromAverageEmissions,
-          gdkAverage,
-        },
-        maximumCalculations: {
-          average: averageFromMaximumEmissions,
-          sumFromMaximumEmissions,
-          gdkMax
-        },
-        measure
+    const response = rows.map(
+      ({
+        short_name: shortName,
+        idEnvironment,
+        averageFromAverageEmissions,
+        maxFromMaximumEmissions,
+        mpc_avrg_d: gdkAverage,
+        mpc_m_ot: gdkMax,
+        Measure: measure,
+      }) => {
+        return {
+          element: shortName,
+          idEnvironment,
+          averageCalculations: {
+            average: averageFromAverageEmissions,
+            gdkAverage,
+          },
+          maximumCalculations: {
+            max: maxFromMaximumEmissions,
+            gdkMax,
+          },
+          measure,
+        };
       }
-    });
+    );
 
     return res.send(JSON.stringify(response));
   });
 };
 
-
 module.exports = {
-  getEmissionsCalculations
+  getEmissionsCalculations,
 };

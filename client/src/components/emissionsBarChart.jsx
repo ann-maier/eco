@@ -19,6 +19,7 @@ export const EmissionsBarChart = ({ emissions }) => {
         return null;
     }
 
+    const [elementName] = getElementName(emissions, elementId);
     const transformedEmissions = transformEmissions(emissions);
     const formattedMonthData = formatMonthDataForBarChart(transformedEmissions, elementId, year);
 
@@ -27,7 +28,7 @@ export const EmissionsBarChart = ({ emissions }) => {
             <div className="d-flex mb-3">
                 <Dropdown className="mr-2">
                     <Dropdown.Toggle size='md'>
-                        {elementId || 'Оберіть елемент'}
+                        {elementName || 'Оберіть елемент'}
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
