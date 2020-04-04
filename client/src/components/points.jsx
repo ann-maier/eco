@@ -46,7 +46,7 @@ export const Points = ({ points, setShowPointModal, setPointId, setIsEditPointMo
           iconUrl: image,
           iconSize: [20, 30],
         })}>
-          <Popup minWidth={emissions.length ? "700" : "100"}>
+          <Popup maxWidth={'auto'}>
             <FontAwesomeIcon icon={faPencilAlt} onClick={() => handleClick(id)} className="edit-pencil-icon" />
             <div className="mt-4 mb-2">
               {name && <div><strong>Назва:</strong> {name}</div>}
