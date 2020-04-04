@@ -46,11 +46,11 @@ export const EmissionsChartModal = ({
                     {emissionCalculations && emissionCalculations.map(
                         (emission, id) => {
                             const exceedingByAverage = emission.averageCalculations.gdkAverage
-                                ? (emission.averageCalculations.average / emission.averageCalculations.gdkAverage).toFixed(valuesPrecision)
+                                ? (emission.averageCalculations.gdkAverage - emission.averageCalculations.average).toFixed(valuesPrecision)
                                 : emptyState;
 
                             const exceedingByMaximum = emission.maximumCalculations.gdkMax
-                                ? (emission.maximumCalculations.max / emission.maximumCalculations.gdkMax).toFixed(valuesPrecision)
+                                ? (emission.maximumCalculations.gdkMax - emission.maximumCalculations.max).toFixed(valuesPrecision)
                                 : emptyState;
 
                             return (
