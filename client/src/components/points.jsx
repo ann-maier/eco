@@ -9,7 +9,7 @@ import { EMISSIONS_CALCULATIONS_URL } from '../utils/constants';
 
 import { EmissionsChartModal } from './emissionsChartModal';
 
-import './points.css';
+import './popup.css';
 
 const initialState = {
   showEmissionsChartModal: false,
