@@ -3,12 +3,12 @@ const pool = require('../../db-config/mysql-config');
 const getExperts = (req, res) => {
   const query = `
   SELECT 
-    ??
+    *
   FROM 
     ??
   ;`;
 
-  const values = [['*'], 'expert'];
+  const values = ['expert'];
 
   return pool.query(query, values, (error, rows) => {
     if (error) {
