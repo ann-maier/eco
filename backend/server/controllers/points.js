@@ -1,6 +1,6 @@
 const pool = require('../../db-config/mysql-config');
 
-const iconsMap = require('../utils/iconsMap');
+const iconsMapPromise = require('../utils/iconsMap')();
 
 const { getEmissionsOnMap, SOURCE_POI } = require('./emissions_on_map');
 
@@ -32,17 +32,15 @@ const getPoints = (req, res) => {
   return pointsPromise.then(points => {
     const pointsPromises = points.map(({ Id, Type, Coord_Lat, Coord_Lng, Description, name, Object_Type_Name }) => {
       const emissionsOnMapPromise = getEmissionsOnMap(SOURCE_POI, Id);
-      return emissionsOnMapPromise.then(emissions => {
-        return {
-          Id,
-          coordinates: [Coord_Lat, Coord_Lng],
-          Description,
-          name,
-          Image: iconsMap.get(+Type),
-          Object_Type_Name,
-          emissions,
-        };
-      });
+      return Promise.all([emissionsOnMapPromise, iconsMapPromise]).then(([emissions, iconsMap]) => ({
+        Id,
+        coordinates: [Coord_Lat, Coord_Lng],
+        Description,
+        name,
+        Image: iconsMap.get(+Type),
+        Object_Type_Name,
+        emissions,
+      }));
     });
 
     return Promise.all(pointsPromises).then(points => res.send(points));
