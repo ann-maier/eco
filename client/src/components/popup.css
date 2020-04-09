@@ -18,3 +18,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.leaflet-popup-content-wrapper {
+  min-width: 150px;
+}

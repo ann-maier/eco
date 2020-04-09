@@ -44,7 +44,7 @@ export const Polygons = ({ polygons, setPolygonId, setIsEditPolygonMode, setShow
         key={poligonId}
         positions={polygonPoints}
         color={`rgba(${brushColorR}, ${brushColorG}, ${brushColorB}, 1)`}>
-        <Popup minWidth={emissions && emissions.length ? "700" : "100"}>
+        <Popup maxWidth={'auto'}>
           <FontAwesomeIcon icon={faPencilAlt} onClick={() => handleClick(poligonId)} className="edit-pencil-icon" />
           <div className="mt-4 mb-2">
             {name && <div><strong>Назва:</strong> {name}</div>}
