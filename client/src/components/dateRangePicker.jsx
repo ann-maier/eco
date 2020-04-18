@@ -6,7 +6,7 @@ import { uk } from 'date-fns/locale';
 import { EMISSIONS_CALCULATIONS_URL } from '../utils/constants';
 import { get } from '../utils/httpService';
 
-export const DateRangePickerView = ({ id }) => {
+export const DateRangePickerView = ({ id, param, setEmissionCalculations }) => {
     const [state, setState] = React.useState([
         {
             startDate: new Date(),
@@ -17,8 +17,8 @@ export const DateRangePickerView = ({ id }) => {
 
     React.useEffect(() => {
         const [date] = state;
-        get(`${EMISSIONS_CALCULATIONS_URL}?idPoi=${id}&startDate=${date.startDate.toISOString()}&endDate=${date.endDate.toISOString()}`)
-            .then(({ data }) => console.log(data))
+        get(`${EMISSIONS_CALCULATIONS_URL}?${param}=${id}&startDate=${date.startDate.toISOString()}&endDate=${date.endDate.toISOString()}`)
+            .then(({ data }) => setEmissionCalculations(data))
     }, [id, state]);
 
     return <DateRangePicker
