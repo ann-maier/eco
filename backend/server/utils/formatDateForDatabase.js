@@ -1,7 +1,8 @@
 const formatDateForDatabase = dateISOString => {
-  const tSeparator = 'T';
+  const date = new Date(`${dateISOString}`).toLocaleDateString();
+  const [month, day, year] = date.split('/');
 
-  return dateISOString.split(tSeparator)[0];
+  return `${year}-${month}-${day}`;
 }
 
 module.exports = {
