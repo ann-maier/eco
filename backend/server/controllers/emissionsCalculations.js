@@ -7,6 +7,7 @@ const getEmissionsCalculations = (req, res) => {
   const typeOfObject = idPoi ? "idPoi" : "idPoligon";
   const id = idPoi || idPolygon;
 
+  console.log(req.query);
   const { stateDate, endDate } = { stateDate: formatDateForDatabase(startDateISOString), endDate: formatDateForDatabase(endDateISOString) };
 
   const query = `

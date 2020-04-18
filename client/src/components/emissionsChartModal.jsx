@@ -4,6 +4,7 @@ import { Table } from 'react-bootstrap';
 import { VerticallyCenteredModal } from "./modal";
 import { Chart } from "./chart";
 import { EmissionsBarChart } from "./emissionsBarChart";
+import { DateRangePickerView } from './dateRangePicker';
 
 import "./emissionsChartModal.css";
 
@@ -11,6 +12,7 @@ const valuesPrecision = 2;
 const emptyState = 'Немає даних';
 
 export const EmissionsChartModal = ({
+    id,
     onHide,
     show,
     emissions,
@@ -28,6 +30,7 @@ export const EmissionsChartModal = ({
 
     return (
         <VerticallyCenteredModal size='xl' show={show} onHide={onHide}>
+            <DateRangePickerView id={id} />
             <Table className="emissions-table">
                 <thead>
                     <tr>

@@ -85,6 +85,7 @@ export const Points = ({ points, setShowPointModal, setPointId, setIsEditPointMo
                 <Button size="sm" onClick={() => getEmissions(id)}>Відобразити графіки викидів</Button>
               </>}
             <EmissionsChartModal
+              id={id}
               emissions={emissions}
               emissionCalculations={emissionCalculations}
               show={showEmissionsChartModal}
