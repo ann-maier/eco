@@ -13,7 +13,7 @@ import './popup.css';
 
 const initialState = {
   showEmissionsChartModal: false,
-  emissionCalculations: []
+  // emissionCalculations: []
 }
 
 export const Points = ({ points, setShowPointModal, setPointId, setIsEditPointMode }) => {
@@ -23,21 +23,21 @@ export const Points = ({ points, setShowPointModal, setPointId, setIsEditPointMo
     setShowPointModal(true)
   };
 
-  const [emissionCalculations, setEmissionCalculations] = React.useState(
-    initialState.emissions
-  );
+  // const [emissionCalculations, setEmissionCalculations] = React.useState(
+  //   initialState.emissions
+  // );
   const [showEmissionsChartModal, setShowEmissionsChartModal] = React.useState(
     initialState.showEmissionsChartModal
   );
 
-  const getEmissions = id => {
+  const getEmissions = () => {
     setShowEmissionsChartModal(true)
-    getEmissionCalculations(id)
+    // getEmissionCalculations(id)
   }
 
-  const getEmissionCalculations = id =>
-    get(`${EMISSIONS_CALCULATIONS_URL}?idPoi=${id}`)
-      .then(({ data }) => setEmissionCalculations(data))
+  // const getEmissionCalculations = id =>
+  //   get(`${EMISSIONS_CALCULATIONS_URL}?idPoi=${id}`)
+  //     .then(({ data }) => setEmissionCalculations(data))
 
   return (
     <>
@@ -87,7 +87,6 @@ export const Points = ({ points, setShowPointModal, setPointId, setIsEditPointMo
             <EmissionsChartModal
               id={id}
               emissions={emissions}
-              emissionCalculations={emissionCalculations}
               show={showEmissionsChartModal}
               onHide={() => setShowEmissionsChartModal(false)} />
           </Popup>

@@ -1,6 +1,9 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
 
+import { get } from '../utils/httpService';
+import { EMISSIONS_CALCULATIONS_URL } from '../utils/constants';
+
 import { VerticallyCenteredModal } from "./modal";
 import { Chart } from "./chart";
 import { EmissionsBarChart } from "./emissionsBarChart";
@@ -16,8 +19,17 @@ export const EmissionsChartModal = ({
     onHide,
     show,
     emissions,
-    emissionCalculations
 }) => {
+    React.useEffect(() => {
+        getEmissionCalculations(id);
+    }, [id]);
+
+    const getEmissionCalculations = id =>
+        get(`${EMISSIONS_CALCULATIONS_URL}?idPoi=${id}`)
+            .then(({ data }) => setEmissionCalculations(data))
+
+    const [emissionCalculations, setEmissionCalculations] = React.useState([]);
+
     const chartAverageData = emissionCalculations && emissionCalculations.length > 0 ? emissionCalculations.map(emission => ({
         name: emission.element,
         value: emission.averageCalculations.average
