@@ -1,9 +1,13 @@
 const pool = require("../../db-config/mysql-config");
 
+const { formatDateForDatabase } = require("../utils/formatDateForDatabase");
+
 const getEmissionsCalculations = (req, res) => {
-  const { idPoi, idPolygon } = req.query;
+  const { idPoi, idPolygon, startDate: startDateISOString, endDate: endDateISOString } = req.query;
   const typeOfObject = idPoi ? "idPoi" : "idPoligon";
   const id = idPoi || idPolygon;
+
+  const { stateDate, endDate } = { stateDate: formatDateForDatabase(startDateISOString), endDate: formatDateForDatabase(endDateISOString) };
 
   const query = `
     SELECT
@@ -13,13 +17,15 @@ const getEmissionsCalculations = (req, res) => {
       MAX(ValueMax) AS maxFromMaximumEmissions,
       elements.Measure,
       gdk.mpc_avrg_d,
-      gdk.mpc_m_ot
+      gdk.mpc_m_ot,
+      STR_TO_DATE(CONCAT(Year,'-',LPAD(Month,2,'00'),'-',LPAD(day,2,'00')), '%Y-%m-%d') as Concated_Date
     FROM 
       emissions_on_map
     INNER JOIN elements ON emissions_on_map.idElement = elements.code
     LEFT JOIN gdk ON emissions_on_map.idElement = gdk.code AND emissions_on_map.idEnvironment = gdk.environment
     WHERE ${typeOfObject} = ${id}
-    GROUP BY idEnvironment, idElement;
+    GROUP BY idEnvironment, idElement
+    HAVING Concated_Date >= ${stateDate} and Concated_Date < ${endDate} + interval 1 day;
   `;
 
   return pool.query(query, [], (error, rows) => {
