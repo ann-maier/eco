@@ -14,11 +14,20 @@ const getPoints = (req, res) => {
     poi.Description,
     poi.name,
     poi.Type,
-    type_of_object.Name as Object_Type_Name
+    type_of_object.Name as Object_Type_Name,
+    owner_type as owner_type_id, 
+    owner_types.type as owner_type_name
   FROM
     poi
-  INNER JOIN type_of_object ON poi.Type = type_of_object.id;
-  `;
+  INNER JOIN
+   type_of_object
+  ON 
+    poi.Type = type_of_object.id
+  INNER JOIN 
+    owner_types 
+   ON 
+    poi.owner_type = owner_types.id
+  ;`;
 
   const pointsPromise = new Promise((resolve, reject) => {
     pool.query(query, (error, rows) => {
@@ -48,6 +57,10 @@ const getPoints = (req, res) => {
             ([emissions, iconsMap]) => ({
               Id,
               id_of_user,
+              owner_type: {
+                id: owner_type_id,
+                name: owner_type_name,
+              },
               coordinates: [Coord_Lat, Coord_Lng],
               Description,
               name,

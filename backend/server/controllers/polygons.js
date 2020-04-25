@@ -271,7 +271,7 @@ const updatePolygon = (req, res) => {
       line_alfa,
       line_thickness,
       name,
-      description,
+      description
     };
 
     const query = `
