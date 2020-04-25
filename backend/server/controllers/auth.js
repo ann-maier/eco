@@ -16,7 +16,7 @@ const login = (req, res) => {
       expert
     ON 
       user.id_of_expert = expert.id_of_expert
-    WHERE user.user_name = ${login} AND user.password = ${password}
+    WHERE user.user_name = '${login}' AND user.password = '${password}'
   ;`;
 
   return pool.query(query, [], (error, rows) => {
