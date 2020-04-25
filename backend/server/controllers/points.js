@@ -51,6 +51,8 @@ const getPoints = (req, res) => {
           Description,
           name,
           Object_Type_Name,
+          owner_type_id,
+          owner_type_name,
         }) => {
           const emissionsOnMapPromise = getEmissionsOnMap(SOURCE_POI, Id);
           return Promise.all([emissionsOnMapPromise, iconsMapPromise]).then(
