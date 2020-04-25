@@ -38,7 +38,7 @@ export const Polygons = ({
           brushColorR,
           brushColorG,
           brushColorB,
-          expertName,
+          user_name,
           name,
           emissions,
         }) => (
@@ -59,9 +59,9 @@ export const Polygons = ({
                     <strong>Назва:</strong> {name}
                   </div>
                 )}
-                {expertName && (
+                {user_name && (
                   <div>
-                    <strong>Керівник який поставив:</strong> {expertName}
+                    <strong>Керівник який поставив:</strong> {user_name}
                   </div>
                 )}
               </div>

@@ -8,11 +8,13 @@ import './filtration.css';
 export const Filtration = ({ setFilteredItems }) => {
   let filtrationForm;
   const [existingExperts, setExistingExperts] = useState([]);
+  const [user, setUser] = React.useState({});
 
   useEffect(() => {
     get(EXPERTS_URL).then(({ data }) => {
       setExistingExperts(data);
     });
+    setUser(JSON.parse(sessionStorage.getItem('user')));
   }, []);
 
   const submitHandler = (e) => {
@@ -37,7 +39,7 @@ export const Filtration = ({ setFilteredItems }) => {
       ref={form => filtrationForm = form}
     >
       <Form.Group>
-        <Form.Label>Select expert</Form.Label>
+        <Form.Label>Оберіть експерта</Form.Label>
         {existingExperts.length &&
           existingExperts.map((expert) => (
             <Form.Check
@@ -48,6 +50,13 @@ export const Filtration = ({ setFilteredItems }) => {
               name='expertCheckbox'
             />
           ))}
+        <Form.Check
+          label="Мої об'єкти"
+          type='checkbox'
+          value={user.id_of_user}
+          key={user.id_of_user}
+          name='expertCheckbox'
+        />
       </Form.Group>
 
       <Button variant='primary' type='submit' className='text-center'>
