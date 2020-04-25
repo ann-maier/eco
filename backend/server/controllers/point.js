@@ -45,7 +45,6 @@ const addPoint = (req, res) => {
 const getPoint = (req, res) => {
   const id = req.params.id;
   const poiPromise = new Promise((resolve, reject) => {
-    const tableName = 'poi';
     const query = `
     SELECT 
       id_of_user, 
