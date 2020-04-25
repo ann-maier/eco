@@ -3,8 +3,6 @@ import { Popup, Polygon } from "react-leaflet";
 import { Button, Table } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
-import { get } from "../utils/httpService";
-import { EMISSIONS_CALCULATIONS_URL } from "../utils/constants";
 
 import { EmissionsChartModal } from "./emissionsChartModal";
 

@@ -28,7 +28,7 @@ export const MenuView = ({ user, setUser }) => {
       <Nav.Item>
         {user ? (
           <div className='d-flex'>
-            <h3 className='mr-2'>Welcome, {user.FIO} ({user.expert_name})</h3>
+            <h3 className='mr-2'>Welcome, {user.user_name} ({user.expert_name})</h3>
             <Button variant='outline-secondary' size='sm' onClick={() => logOut()}>
               Log Out
             </Button>

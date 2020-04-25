@@ -35,6 +35,7 @@ export const Points = ({
           Description: description,
           Image: image,
           emissions,
+          owner_type
         }) => (
           <Marker
             key={id}
@@ -61,6 +62,11 @@ export const Points = ({
                 {description && (
                   <div>
                     <strong>Опис:</strong> {description}
+                  </div>
+                )}
+                {owner_type && (
+                  <div>
+                    <strong>Форма власності:</strong> {owner_type.name}
                   </div>
                 )}
               </div>

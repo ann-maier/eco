@@ -26,7 +26,7 @@ export const EmissionsChartModal = ({
 
   React.useEffect(() => {
     getEmissionCalculations(id);
-  });
+  }, [id]);
 
   const getEmissionCalculations = (id) => {
     get(`${EMISSIONS_CALCULATIONS_URL}?${param}=${id}`).then(({ data }) =>
