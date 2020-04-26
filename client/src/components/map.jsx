@@ -107,6 +107,12 @@ export const MapView = ({ user }) => {
     });
   };
 
+  const filterByExpert = ({ id_of_expert: idOfExpert }) =>
+    filteredItems.items.some(({ id_of_expert }) => idOfExpert === id_of_expert)
+
+  const filterByUser = ({ id_of_user: idOfUser }) =>
+    filteredItems.items.some(({ id_of_user }) => idOfUser === id_of_user)
+
   useEffect(() => {
     if (shouldFetchData) {
       fetchData();
@@ -119,27 +125,14 @@ export const MapView = ({ user }) => {
       let filteredPolygons = [];
       let filteredPoints = [];
 
-      filteredPolygons = initialState.polygons.filter(
-        ({ id_of_expert: idOfExpert }) =>
-          filteredItems.items.some(({ id_of_expert }) => idOfExpert === id_of_expert)
-      );
-
-      filteredPoints = initialState.points.filter(
-        ({ id_of_expert: idOfExpert }) =>
-          filteredItems.items.some(({ id_of_expert }) => idOfExpert === id_of_expert)
-      );
+      filteredPolygons = initialState.polygons.filter(filterByExpert);
+      filteredPoints = initialState.points.filter(filterByExpert);
 
       if (filteredItems.isMyObjectsSelectionChecked) {
-        const myPolygons = initialState.polygons.filter(
-          ({ id_of_user: idOfUser }) =>
-            filteredItems.items.some(({ id_of_user }) => idOfUser === id_of_user)
-        );
-        filteredPolygons = [...filteredPolygons, ...myPolygons];
+        const myPolygons = initialState.polygons.filter(filterByUser);
+        const myPoints = initialState.points.filter(filterByUser);
 
-        const myPoints = initialState.points.filter(
-          ({ id_of_user: idOfUser }) =>
-            filteredItems.items.some(({ id_of_user }) => idOfUser === id_of_user)
-        );
+        filteredPolygons = [...filteredPolygons, ...myPolygons];
         filteredPoints = [...filteredPoints, ...myPoints];
       }
 
