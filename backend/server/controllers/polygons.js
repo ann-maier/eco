@@ -73,7 +73,6 @@ const getPolygons = (req, res) => {
           brushColorR: polygon.brush_color_r,
           brushColorG: polygon.bruch_color_g,
           brushColorB: polygon.brush_color_b,
-          expertName: polygon.expert_name,
           lineAlfa: polygon.line_alfa,
           lineCollorR: polygon.line_collor_r,
           lineColorB: polygon.line_color_b,
