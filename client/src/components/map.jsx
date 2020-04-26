@@ -143,6 +143,16 @@ export const MapView = ({ user }) => {
         filteredPoints = [...filteredPoints, ...myPoints];
       }
 
+      // inside filteredPoints and myPoints might be same items
+      // get rid of duplicates inside them
+      let map = new Map();
+      filteredPoints.forEach(item => map.set(item.Id, item));
+      filteredPoints = Array.from(map).map(([id, item]) => item);
+      // please check also filteredPolygons
+      map = new Map();
+      filteredPolygons.forEach(item => map.set(item.polygonId, item));
+      filteredPolygons = Array.from(map).map(([id, item]) => item);
+      //
       setFilteredPoints(filteredPoints);
       setFilteredPolygons(filteredPolygons);
     } else {
