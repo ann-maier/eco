@@ -16,7 +16,8 @@ const getPoints = (req, res) => {
     poi.Type,
     type_of_object.Name as Object_Type_Name,
     owner_type as owner_type_id, 
-    owner_types.type as owner_type_name
+    owner_types.type as owner_type_name,
+    user.id_of_expert 
   FROM
     poi
   INNER JOIN
@@ -27,6 +28,10 @@ const getPoints = (req, res) => {
     owner_types 
    ON 
     poi.owner_type = owner_types.id
+  INNER JOIN 
+    user 
+  ON 
+    poi.id_of_user = user.id_of_user
   ;`;
 
   const pointsPromise = new Promise((resolve, reject) => {
@@ -45,6 +50,7 @@ const getPoints = (req, res) => {
         ({
           Id,
           id_of_user,
+          id_of_expert,
           Type,
           Coord_Lat,
           Coord_Lng,
@@ -59,6 +65,7 @@ const getPoints = (req, res) => {
             ([emissions, iconsMap]) => ({
               Id,
               id_of_user,
+              id_of_expert,
               owner_type: {
                 id: owner_type_id,
                 name: owner_type_name,

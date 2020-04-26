@@ -23,7 +23,8 @@ const getPolygons = (req, res) => {
       poligon.line_thickness,
       poligon.name,
       poligon.id_of_user,
-      user.user_name
+      user.user_name,
+      user.id_of_expert
     FROM poligon
     INNER JOIN user ON poligon.id_of_user = user.id_of_user;
   `;
@@ -81,7 +82,8 @@ const getPolygons = (req, res) => {
           name: polygon.name,
           polygonPoints: mappedPolygonPoints,
           id_of_user: polygon.id_of_user,
-          user_name: polygon.user_name
+          user_name: polygon.user_name,
+          id_of_expert: polygon.id_of_expert,
         };
       });
     })
