@@ -10,7 +10,7 @@ export const VerticallyCenteredModal = (props) => (
   >
     <Modal.Header closeButton>
       <Modal.Title id='contained-modal-title-vcenter'>
-        Modal heading
+        {props.header}
       </Modal.Title>
     </Modal.Header>
     <Modal.Body>{props.children}</Modal.Body>

@@ -51,7 +51,7 @@ export const EmissionsChartModal = ({
       : [];
 
   return (
-    <VerticallyCenteredModal size="xl" show={show} onHide={onHide}>
+    <VerticallyCenteredModal size="xl" show={show} onHide={onHide} header="Відобразити викиди">
       <h3 className="mb-3">
         Оберіть дати для відображення викидів за певний період
       </h3>

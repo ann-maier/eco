@@ -123,7 +123,7 @@ export const AddPointModal = ({
   }, [pointId, isEditPointMode]);
 
   return (
-    <VerticallyCenteredModal size='lg' show={show} onHide={() => hide()}>
+    <VerticallyCenteredModal size='lg' show={show} onHide={() => hide()} header="Додати або редагувати точку">
       <Form>
         <Form.Group>
           <Dropdown>

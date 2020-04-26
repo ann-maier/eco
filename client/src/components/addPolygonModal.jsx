@@ -140,7 +140,7 @@ export const AddPolygonModal = ({
   };
 
   return (
-    <VerticallyCenteredModal size='lg' show={show} onHide={() => hide()}>
+    <VerticallyCenteredModal size='lg' show={show} onHide={() => hide()} header="Додати або редагувати полігон">
       <Form>
         <Form.Group>
           <Form.Label>

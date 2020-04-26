@@ -15,6 +15,7 @@ export const Login = (props) => {
       <VerticallyCenteredModal
         show={modalShow}
         onHide={() => setModalShow(false)}
+        header="Увійти до персонального акаунту"
       >
         <Auth onHide={() => setModalShow(false)} setUser={props.setUser} />
       </VerticallyCenteredModal>
