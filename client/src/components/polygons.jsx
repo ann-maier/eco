@@ -3,8 +3,6 @@ import { Popup, Polygon } from "react-leaflet";
 import { Button, Table } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
-import { get } from "../utils/httpService";
-import { EMISSIONS_CALCULATIONS_URL } from "../utils/constants";
 
 import { EmissionsChartModal } from "./emissionsChartModal";
 
@@ -40,7 +38,7 @@ export const Polygons = ({
           brushColorR,
           brushColorG,
           brushColorB,
-          expertName,
+          user_name,
           name,
           emissions,
         }) => (
@@ -61,9 +59,9 @@ export const Polygons = ({
                     <strong>Назва:</strong> {name}
                   </div>
                 )}
-                {expertName && (
+                {user_name && (
                   <div>
-                    <strong>Керівник який поставив:</strong> {expertName}
+                    <strong>Керівник який поставив:</strong> {user_name}
                   </div>
                 )}
               </div>

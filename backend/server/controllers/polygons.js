@@ -10,7 +10,7 @@ const mapPolygonPoints = (polygonPoints, idOfPolygon) => {
 
 const getPolygons = (req, res) => {
   const queryGetPolygons = `
-    SELECT 
+     SELECT 
       poligon.id_of_poligon,
       poligon.brush_color_r,
       poligon.bruch_color_g,
@@ -22,10 +22,11 @@ const getPolygons = (req, res) => {
       poligon.line_alfa,
       poligon.line_thickness,
       poligon.name,
-      poligon.id_of_expert,
-      expert.expert_name
+      poligon.id_of_user,
+      user.user_name,
+      user.id_of_expert
     FROM poligon
-    INNER JOIN expert ON poligon.id_of_expert = expert.id_of_expert;
+    INNER JOIN user ON poligon.id_of_user = user.id_of_user;
   `;
 
   let queryGetPolygonPoints = `
@@ -73,7 +74,6 @@ const getPolygons = (req, res) => {
           brushColorR: polygon.brush_color_r,
           brushColorG: polygon.bruch_color_g,
           brushColorB: polygon.brush_color_b,
-          expertName: polygon.expert_name,
           lineAlfa: polygon.line_alfa,
           lineCollorR: polygon.line_collor_r,
           lineColorB: polygon.line_color_b,
@@ -81,7 +81,9 @@ const getPolygons = (req, res) => {
           lineThickness: polygon.line_thickness,
           name: polygon.name,
           polygonPoints: mappedPolygonPoints,
-          idOfExpert: polygon.id_of_expert
+          id_of_user: polygon.id_of_user,
+          user_name: polygon.user_name,
+          id_of_expert: polygon.id_of_expert,
         };
       });
     })
@@ -219,7 +221,7 @@ const getPolygon = (req, res) => {
         'line_alfa',
         'line_thickness',
         'name',
-        'id_of_expert',
+        'id_of_user',
         'type',
         'description',
       ], tableName, 'Id_of_poligon', id];
@@ -270,7 +272,7 @@ const updatePolygon = (req, res) => {
       line_alfa,
       line_thickness,
       name,
-      description,
+      description
     };
 
     const query = `

@@ -5,7 +5,7 @@ import { EXPERTS_URL } from '../utils/constants';
 
 import './filtration.css';
 
-export const Filtration = ({ setFilteredItems }) => {
+export const Filtration = ({ user, setFilteredItems }) => {
   let filtrationForm;
   const [existingExperts, setExistingExperts] = useState([]);
 
@@ -18,16 +18,19 @@ export const Filtration = ({ setFilteredItems }) => {
   const submitHandler = (e) => {
     e.preventDefault();
 
-    const { expertCheckbox: expertCheckboxes } = filtrationForm;
+    const { expertCheckbox: expertCheckboxes, myCheckbox } = filtrationForm;
     const selectedExperts = Array.from(expertCheckboxes)
       .filter(({ checked }) => checked)
-      .map(({ value }) => {
-        return existingExperts.find(
-          ({ id_of_expert }) => +id_of_expert === +value
-        );
-      });
+      .map(({ value }) => existingExperts.find(
+        ({ id_of_expert }) => +id_of_expert === +value
+      ));
 
-    setFilteredItems(selectedExperts);
+    if (myCheckbox && myCheckbox.checked) {
+      setFilteredItems({ isMyObjectsSelectionChecked: true, items: [...selectedExperts, user] });
+    }
+    else {
+      setFilteredItems({ isMyObjectsSelectionChecked: false, items: selectedExperts });
+    }
   };
 
   return (
@@ -37,7 +40,7 @@ export const Filtration = ({ setFilteredItems }) => {
       ref={form => filtrationForm = form}
     >
       <Form.Group>
-        <Form.Label>Select expert</Form.Label>
+        <Form.Label>Оберіть експерта</Form.Label>
         {existingExperts.length &&
           existingExperts.map((expert) => (
             <Form.Check
@@ -48,6 +51,15 @@ export const Filtration = ({ setFilteredItems }) => {
               name='expertCheckbox'
             />
           ))}
+        {user && (
+          <Form.Check
+            label="Мої об'єкти"
+            type='checkbox'
+            value={user.id_of_user}
+            key={user.id_of_user}
+            name='myCheckbox'
+          />
+        )}
       </Form.Group>
 
       <Button variant='primary' type='submit' className='text-center'>

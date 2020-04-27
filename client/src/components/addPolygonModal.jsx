@@ -78,6 +78,7 @@ export const AddPolygonModal = ({
       line_alfa: color.a,
       line_thickness: Number(lineThickness),
       name,
+      id_of_user: Number(user.id_of_user),
       id_of_expert: Number(user.id_of_expert),
       type: initialState.form.type,
       description,
@@ -139,7 +140,7 @@ export const AddPolygonModal = ({
   };
 
   return (
-    <VerticallyCenteredModal size='lg' show={show} onHide={() => hide()}>
+    <VerticallyCenteredModal size='lg' show={show} onHide={() => hide()} header="Додати або редагувати полігон">
       <Form>
         <Form.Group>
           <Form.Label>

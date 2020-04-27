@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Dropdown, Form } from "react-bootstrap";
 
-import { TYPE_OF_OBJECT_URL } from "../utils/constants";
+import { TYPE_OF_OBJECT_URL, OWNER_TYPES_URL } from "../utils/constants";
 import { post, get, put } from "../utils/httpService";
 import { POINT_URL } from "../utils/constants";
 
@@ -15,12 +15,17 @@ const initialState = {
     type: {
       id: 0,
       name: ''
+    },
+    ownerType: {
+      id: 0,
+      type: ''
     }
   }
 };
 
 const emptyState = {
-  typeOfObject: 'Choose type of object'
+  typeOfObject: `Оберіть тип об'єкту`,
+  ownerType: `Оберіть форму власності`
 };
 
 export const AddPointModal = ({
@@ -31,17 +36,21 @@ export const AddPointModal = ({
   isEditPointMode,
   setIsEditPointMode,
   pointId,
-  setPointId
+  setPointId,
+  user,
 }) => {
   const [name, setName] = useState(initialState.form.name);
   const [description, setDescription] = useState(initialState.form.description);
   const [type, setType] = useState(initialState.form.type);
+  const [ownerType, setOwnerType] = useState(initialState.form.ownerType);
   const [types, setTypes] = useState([]);
+  const [ownerTypes, setOwnerTypes] = useState([]);
 
   const clearForm = () => {
     setName(initialState.form.name);
     setDescription(initialState.form.description);
     setType(initialState.form.type);
+    setOwnerType(initialState.form.ownerType);
   };
 
   const addPoint = emission => {
@@ -50,7 +59,9 @@ export const AddPointModal = ({
       description,
       type: type.id,
       coordinates,
-      emission
+      emission,
+      id_of_user: user.id_of_user,
+      owner_type_id: ownerType.id,
     }).then(() => {
       clearForm();
       onHide();
@@ -63,6 +74,7 @@ export const AddPointModal = ({
       name,
       description,
       type: type.id,
+      owner_type_id: ownerType.id,
       emission
     }).then(() => {
       clearForm();
@@ -88,14 +100,21 @@ export const AddPointModal = ({
     get(TYPE_OF_OBJECT_URL).then(({ data }) => {
       setTypes(data);
     });
+    get(OWNER_TYPES_URL).then(({ data }) => {
+      setOwnerTypes(data);
+    });
   }, []);
 
   useEffect(() => {
     if (isEditPointMode && pointId) {
       get(`${POINT_URL}/${pointId}`).then(({ data }) => {
         const type = types.find(({ id }) => id === data.type);
+        const ownerType = ownerTypes.find(({ id }) => id === data.owner_type.id);
         if (type) {
           setType(type);
+        }
+        if (ownerType) {
+          setOwnerType(ownerType);
         }
         setName(data.name);
         setDescription(data.description);
@@ -104,7 +123,7 @@ export const AddPointModal = ({
   }, [pointId, isEditPointMode]);
 
   return (
-    <VerticallyCenteredModal size='lg' show={show} onHide={() => hide()}>
+    <VerticallyCenteredModal size='lg' show={show} onHide={() => hide()} header="Додати або редагувати точку">
       <Form>
         <Form.Group>
           <Dropdown>
@@ -120,6 +139,26 @@ export const AddPointModal = ({
                   onClick={() => setType(typeOfObject)}
                 >
                   {typeOfObject.name}
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
+        </Form.Group>
+
+        <Form.Group>
+          <Dropdown>
+            <Dropdown.Toggle size='sm' variant='success'>
+              {ownerType.type || emptyState.ownerType}
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              {ownerTypes.length && ownerTypes.map(type => (
+                <Dropdown.Item
+                  key={type.id}
+                  active={type === ownerType}
+                  onClick={() => setOwnerType(type)}
+                >
+                  {type.type}
                 </Dropdown.Item>
               ))}
             </Dropdown.Menu>

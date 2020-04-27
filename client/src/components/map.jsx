@@ -7,7 +7,7 @@ import {
   POLYGONS_URL,
   POINTS_URL,
   MAP_CENTER_COORDS,
-  OPEN_STREET_MAP_URL
+  OPEN_STREET_MAP_URL,
 } from '../utils/constants';
 
 import { Polygons } from './polygons';
@@ -19,16 +19,20 @@ import { Filtration } from './filtration';
 import './map.css';
 
 const initialState = {
+  points: [],
   polygons: [
     {
       name: '',
       expertName: '',
-      polygonPoints: []
-    }
+      polygonPoints: [],
+    },
   ],
   filteredPolygons: [],
-  filteredItems: [],
-  points: [],
+  filteredItems: {
+    isMyObjectsSelectionChecked: false,
+    items: [],
+  },
+  filteredPoints: [],
   isAddPointModeEnabled: false,
   isAddPolygonModeEnabled: false,
   showPointModal: false,
@@ -48,14 +52,17 @@ const buttonText = (geographicalObj, isModeEnabled) =>
     : `Add ${geographicalObj} to the map`;
 
 export const MapView = ({ user }) => {
-  const [filteredItems, setFilteredItems] = useState(initialState.filteredItems);
-  const [filteredPolygons, setFilteredPolygons] = useState(initialState.filteredPolygons);
-  const [points, setPoints] = useState(initialState.points);
+  const [filteredItems, setFilteredItems] = useState(
+    initialState.filteredItems
+  );
   const [shouldFetchData, setShouldFetchData] = useState(
     initialState.shouldFetchData
   );
 
   // points
+  const [filteredPoints, setFilteredPoints] = useState(
+    initialState.filteredPoints
+  );
   const [isAddPointModeEnabled, setAddPointMode] = useState(
     initialState.isAddPointModeEnabled
   );
@@ -67,6 +74,9 @@ export const MapView = ({ user }) => {
   );
 
   // polygons
+  const [filteredPolygons, setFilteredPolygons] = useState(
+    initialState.filteredPolygons
+  );
   const [isAddPolygonModeEnabled, setAddPolygonMode] = useState(
     initialState.isAddPolygonModeEnabled
   );
@@ -87,18 +97,24 @@ export const MapView = ({ user }) => {
   const [isEditPolygonMode, setIsEditPolygonMode] = useState(
     initialState.isEditPolygonMode
   );
-  const [polygonId, setPolygonId] = useState(
-    initialState.polygonId
-  );
-
+  const [polygonId, setPolygonId] = useState(initialState.polygonId);
 
   const fetchData = () => {
     get(POLYGONS_URL).then(({ data }) => {
       setFilteredPolygons(data);
       initialState.polygons = data;
     });
-    get(POINTS_URL).then(({ data }) => setPoints(data));
+    get(POINTS_URL).then(({ data }) => {
+      setFilteredPoints(data);
+      initialState.points = data;
+    });
   };
+
+  const filterByExpert = ({ id_of_expert: idOfExpert }) =>
+    filteredItems.items.some(({ id_of_expert }) => idOfExpert === id_of_expert);
+
+  const filterByUser = ({ id_of_user: idOfUser }) =>
+    filteredItems.items.some(({ id_of_user }) => idOfUser === id_of_user);
 
   useEffect(() => {
     if (shouldFetchData) {
@@ -108,14 +124,41 @@ export const MapView = ({ user }) => {
   }, [shouldFetchData]);
 
   useEffect(() => {
-    if (filteredItems.length) {
-      const filteredPolygons = initialState.polygons.filter(({ idOfExpert }) => {
-        return filteredItems.some(
-          ({ id_of_expert }) => idOfExpert === id_of_expert
-        );
-      });
+    if (filteredItems.items.length) {
+      let filteredPolygons = [];
+      let filteredPoints = [];
+
+      filteredPolygons = initialState.polygons.filter(filterByExpert);
+      filteredPoints = initialState.points.filter(filterByExpert);
+
+      if (filteredItems.isMyObjectsSelectionChecked) {
+        const myPolygons = initialState.polygons.filter(filterByUser);
+        const myPoints = initialState.points.filter(filterByUser);
+
+        filteredPolygons = [...filteredPolygons, ...myPolygons];
+        filteredPoints = [...filteredPoints, ...myPoints];
+      }
+
+      const uniqueObjectsMap = new Map();
+      filteredPoints.forEach((point) => uniqueObjectsMap.set(point.Id, point));
+      filteredPoints = Array.from(uniqueObjectsMap).map(
+        ([pointId, point]) => point
+      );
+
+      uniqueObjectsMap.clear();
+
+      filteredPolygons.forEach((polygon) =>
+        uniqueObjectsMap.set(polygon.polygonId, polygon)
+      );
+
+      filteredPolygons = Array.from(uniqueObjectsMap).map(
+        ([polygonId, polygon]) => polygon
+      );
+
+      setFilteredPoints(filteredPoints);
       setFilteredPolygons(filteredPolygons);
     } else {
+      setFilteredPoints(initialState.points);
       setFilteredPolygons(initialState.polygons);
     }
   }, [filteredItems]);
@@ -165,7 +208,7 @@ export const MapView = ({ user }) => {
           setShowPolygonModal={setShowPolygonModal}
         />
         <Points
-          points={points}
+          points={filteredPoints}
           setPointId={setPointId}
           setIsEditPointMode={setIsEditPointMode}
           setShowPointModal={setShowPointModal}
@@ -175,20 +218,22 @@ export const MapView = ({ user }) => {
         <Navbar expand='lg' className='map-options'>
           <Button
             size='sm'
-            variant={isAddPointModeEnabled ? "outline-danger" : "outline-primary"}
+            variant={
+              isAddPointModeEnabled ? 'outline-danger' : 'outline-primary'
+            }
             onClick={() => setAddPointMode(!isAddPointModeEnabled)}
           >
-            {buttonText("point", isAddPointModeEnabled)}
+            {buttonText('point', isAddPointModeEnabled)}
           </Button>
           <Button
             className='ml-3'
             size='sm'
             variant={
-              isAddPolygonModeEnabled ? "outline-danger" : "outline-primary"
+              isAddPolygonModeEnabled ? 'outline-danger' : 'outline-primary'
             }
             onClick={() => setAddPolygonMode(!isAddPolygonModeEnabled)}
           >
-            {buttonText("polygon", isAddPolygonModeEnabled)}
+            {buttonText('polygon', isAddPolygonModeEnabled)}
           </Button>
           {isAddPolygonModeEnabled && (
             <Button
@@ -203,7 +248,7 @@ export const MapView = ({ user }) => {
         </Navbar>
       )}
 
-      <Filtration setFilteredItems={setFilteredItems} />
+      <Filtration user={user} setFilteredItems={setFilteredItems} />
 
       <AddPointModal
         show={showPointModal}
@@ -214,6 +259,7 @@ export const MapView = ({ user }) => {
         setIsEditPointMode={setIsEditPointMode}
         pointId={pointId}
         setPointId={setPointId}
+        user={user}
       />
       <AddPolygonModal
         show={showPolygonModal}
