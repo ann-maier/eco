@@ -7,7 +7,7 @@ import {
   POLYGONS_URL,
   POINTS_URL,
   MAP_CENTER_COORDS,
-  OPEN_STREET_MAP_URL
+  OPEN_STREET_MAP_URL,
 } from '../utils/constants';
 
 import { Polygons } from './polygons';
@@ -24,13 +24,13 @@ const initialState = {
     {
       name: '',
       expertName: '',
-      polygonPoints: []
-    }
+      polygonPoints: [],
+    },
   ],
   filteredPolygons: [],
   filteredItems: {
     isMyObjectsSelectionChecked: false,
-    items: []
+    items: [],
   },
   filteredPoints: [],
   isAddPointModeEnabled: false,
@@ -52,13 +52,17 @@ const buttonText = (geographicalObj, isModeEnabled) =>
     : `Add ${geographicalObj} to the map`;
 
 export const MapView = ({ user }) => {
-  const [filteredItems, setFilteredItems] = useState(initialState.filteredItems);
+  const [filteredItems, setFilteredItems] = useState(
+    initialState.filteredItems
+  );
   const [shouldFetchData, setShouldFetchData] = useState(
     initialState.shouldFetchData
   );
 
   // points
-  const [filteredPoints, setFilteredPoints] = useState(initialState.filteredPoints);
+  const [filteredPoints, setFilteredPoints] = useState(
+    initialState.filteredPoints
+  );
   const [isAddPointModeEnabled, setAddPointMode] = useState(
     initialState.isAddPointModeEnabled
   );
@@ -70,7 +74,9 @@ export const MapView = ({ user }) => {
   );
 
   // polygons
-  const [filteredPolygons, setFilteredPolygons] = useState(initialState.filteredPolygons);
+  const [filteredPolygons, setFilteredPolygons] = useState(
+    initialState.filteredPolygons
+  );
   const [isAddPolygonModeEnabled, setAddPolygonMode] = useState(
     initialState.isAddPolygonModeEnabled
   );
@@ -91,10 +97,7 @@ export const MapView = ({ user }) => {
   const [isEditPolygonMode, setIsEditPolygonMode] = useState(
     initialState.isEditPolygonMode
   );
-  const [polygonId, setPolygonId] = useState(
-    initialState.polygonId
-  );
-
+  const [polygonId, setPolygonId] = useState(initialState.polygonId);
 
   const fetchData = () => {
     get(POLYGONS_URL).then(({ data }) => {
@@ -108,10 +111,10 @@ export const MapView = ({ user }) => {
   };
 
   const filterByExpert = ({ id_of_expert: idOfExpert }) =>
-    filteredItems.items.some(({ id_of_expert }) => idOfExpert === id_of_expert)
+    filteredItems.items.some(({ id_of_expert }) => idOfExpert === id_of_expert);
 
   const filterByUser = ({ id_of_user: idOfUser }) =>
-    filteredItems.items.some(({ id_of_user }) => idOfUser === id_of_user)
+    filteredItems.items.some(({ id_of_user }) => idOfUser === id_of_user);
 
   useEffect(() => {
     if (shouldFetchData) {
@@ -136,16 +139,22 @@ export const MapView = ({ user }) => {
         filteredPoints = [...filteredPoints, ...myPoints];
       }
 
-      // inside filteredPoints and myPoints might be same items
-      // get rid of duplicates inside them
-      let map = new Map();
-      filteredPoints.forEach(item => map.set(item.Id, item));
-      filteredPoints = Array.from(map).map(([id, item]) => item);
-      // please check also filteredPolygons
-      map = new Map();
-      filteredPolygons.forEach(item => map.set(item.polygonId, item));
-      filteredPolygons = Array.from(map).map(([id, item]) => item);
-      //
+      const uniqueObjectsMap = new Map();
+      filteredPoints.forEach((point) => uniqueObjectsMap.set(point.Id, point));
+      filteredPoints = Array.from(uniqueObjectsMap).map(
+        ([pointId, point]) => point
+      );
+
+      uniqueObjectsMap.clear();
+
+      filteredPolygons.forEach((polygon) =>
+        uniqueObjectsMap.set(polygon.polygonId, polygon)
+      );
+
+      filteredPolygons = Array.from(uniqueObjectsMap).map(
+        ([polygonId, polygon]) => polygon
+      );
+
       setFilteredPoints(filteredPoints);
       setFilteredPolygons(filteredPolygons);
     } else {
@@ -209,20 +218,22 @@ export const MapView = ({ user }) => {
         <Navbar expand='lg' className='map-options'>
           <Button
             size='sm'
-            variant={isAddPointModeEnabled ? "outline-danger" : "outline-primary"}
+            variant={
+              isAddPointModeEnabled ? 'outline-danger' : 'outline-primary'
+            }
             onClick={() => setAddPointMode(!isAddPointModeEnabled)}
           >
-            {buttonText("point", isAddPointModeEnabled)}
+            {buttonText('point', isAddPointModeEnabled)}
           </Button>
           <Button
             className='ml-3'
             size='sm'
             variant={
-              isAddPolygonModeEnabled ? "outline-danger" : "outline-primary"
+              isAddPolygonModeEnabled ? 'outline-danger' : 'outline-primary'
             }
             onClick={() => setAddPolygonMode(!isAddPolygonModeEnabled)}
           >
-            {buttonText("polygon", isAddPolygonModeEnabled)}
+            {buttonText('polygon', isAddPolygonModeEnabled)}
           </Button>
           {isAddPolygonModeEnabled && (
             <Button
