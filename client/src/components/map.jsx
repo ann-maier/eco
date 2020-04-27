@@ -9,6 +9,7 @@ import {
   MAP_CENTER_COORDS,
   OPEN_STREET_MAP_URL,
 } from '../utils/constants';
+import { removeObjectDuplicates } from '../utils/helpers';
 
 import { Polygons } from './polygons';
 import { Points } from './points';
@@ -139,21 +140,8 @@ export const MapView = ({ user }) => {
         filteredPoints = [...filteredPoints, ...myPoints];
       }
 
-      const uniqueObjectsMap = new Map();
-      filteredPoints.forEach((point) => uniqueObjectsMap.set(point.Id, point));
-      filteredPoints = Array.from(uniqueObjectsMap).map(
-        ([pointId, point]) => point
-      );
-
-      uniqueObjectsMap.clear();
-
-      filteredPolygons.forEach((polygon) =>
-        uniqueObjectsMap.set(polygon.polygonId, polygon)
-      );
-
-      filteredPolygons = Array.from(uniqueObjectsMap).map(
-        ([polygonId, polygon]) => polygon
-      );
+      filteredPoints = removeObjectDuplicates(filteredPoints, 'Id');
+      filteredPolygons = removeObjectDuplicates(filteredPolygons, 'polygonId');
 
       setFilteredPoints(filteredPoints);
       setFilteredPolygons(filteredPolygons);

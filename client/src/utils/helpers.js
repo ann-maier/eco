@@ -62,3 +62,9 @@ export const getElementName = (emissions, emissionId) => [
       .map(({ short_name }) => short_name)
   )
 ];
+
+export const removeObjectDuplicates = (items, prop) =>
+  items.filter(
+    (obj, index, arr) =>
+      arr.map((mapObj) => mapObj[prop]).indexOf(obj[prop]) === index
+  );
