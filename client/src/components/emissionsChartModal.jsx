@@ -57,9 +57,9 @@ export const EmissionsChartModal = ({
       onHide={onHide}
       header="Відобразити викиди"
     >
-      <h3 className="mb-3">
+      <h4 className="mb-3">
         Оберіть дати для відображення викидів за певний період
-      </h3>
+      </h4>
       <DateRangePickerView
         id={id}
         param={param}
@@ -129,7 +129,7 @@ export const EmissionsChartModal = ({
           </tbody>
         </Table>
       ) : (
-          <h5 className="mt-3 mb-3">Немає інформації про викиди за обраний період</h5>
+          <h6 className="mt-3 mb-3">Немає інформації про викиди за обраний період</h6>
         )}
       <div className="d-flex justify-content-around">
         {chartAverageData.length > 0 && (
