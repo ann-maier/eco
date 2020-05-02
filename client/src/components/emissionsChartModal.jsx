@@ -37,21 +37,26 @@ export const EmissionsChartModal = ({
   const chartAverageData =
     emissionCalculations && emissionCalculations.length > 0
       ? emissionCalculations.map((emission) => ({
-          name: emission.element,
-          value: emission.averageCalculations.average,
-        }))
+        name: emission.element,
+        value: emission.averageCalculations.average,
+      }))
       : [];
 
   const chartMaxData =
     emissionCalculations && emissionCalculations.length > 0
       ? emissionCalculations.map((emission) => ({
-          name: emission.element,
-          value: emission.maximumCalculations.max,
-        }))
+        name: emission.element,
+        value: emission.maximumCalculations.max,
+      }))
       : [];
 
   return (
-    <VerticallyCenteredModal size="xl" show={show} onHide={onHide} header="Відобразити викиди">
+    <VerticallyCenteredModal
+      size="xl"
+      show={show}
+      onHide={onHide}
+      header="Відобразити викиди"
+    >
       <h3 className="mb-3">
         Оберіть дати для відображення викидів за певний період
       </h3>
@@ -81,16 +86,16 @@ export const EmissionsChartModal = ({
             {emissionCalculations.map((emission, id) => {
               const exceedingByAverage = emission.averageCalculations.gdkAverage
                 ? (
-                    emission.averageCalculations.gdkAverage -
-                    emission.averageCalculations.average
-                  ).toFixed(valuesPrecision)
+                  emission.averageCalculations.gdkAverage -
+                  emission.averageCalculations.average
+                ).toFixed(valuesPrecision)
                 : emptyState;
 
               const exceedingByMaximum = emission.maximumCalculations.gdkMax
                 ? (
-                    emission.maximumCalculations.gdkMax -
-                    emission.maximumCalculations.max
-                  ).toFixed(valuesPrecision)
+                  emission.maximumCalculations.gdkMax -
+                  emission.maximumCalculations.max
+                ).toFixed(valuesPrecision)
                 : emptyState;
 
               return (
@@ -124,13 +129,20 @@ export const EmissionsChartModal = ({
           </tbody>
         </Table>
       ) : (
-        <h5 className="mb-3">Немає інформації про викиди за обраний період</h5>
-      )}
+          <h5 className="mt-3 mb-3">Немає інформації про викиди за обраний період</h5>
+        )}
+      <div className="d-flex justify-content-around">
+        {chartAverageData.length > 0 && (
+          <Chart title="Сума середніх викидів" data={chartAverageData} />
+        )}
+        {chartMaxData.length > 0 && (
+          <Chart title="Сума максимальних викидів" data={chartMaxData} />
+        )}
+      </div>
+      <h4 className="mb-3">
+        Оберіть елемент та рік для відображення викидів за допомогою стовпчастої діаграми
+      </h4>
       <EmissionsBarChart emissions={emissions} />
-      <h3>Сума average викидів</h3>
-      <Chart data={chartAverageData} />
-      <h3>Сума max викидів</h3>
-      <Chart data={chartMaxData} />
     </VerticallyCenteredModal>
   );
 };
