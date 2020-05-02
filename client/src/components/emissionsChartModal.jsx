@@ -3,6 +3,7 @@ import { Table } from "react-bootstrap";
 
 import { get } from "../utils/httpService";
 import { EMISSIONS_CALCULATIONS_URL } from "../utils/constants";
+import { findAverageForEmissionCalculations, findMaxForEmissionCalculations } from '../utils/helpers';
 
 import { VerticallyCenteredModal } from "./modal";
 import { Chart } from "./chart";
@@ -36,18 +37,12 @@ export const EmissionsChartModal = ({
 
   const chartAverageData =
     emissionCalculations && emissionCalculations.length > 0
-      ? emissionCalculations.map((emission) => ({
-        name: emission.element,
-        value: emission.averageCalculations.average,
-      }))
+      ? findAverageForEmissionCalculations(emissionCalculations)
       : [];
 
   const chartMaxData =
     emissionCalculations && emissionCalculations.length > 0
-      ? emissionCalculations.map((emission) => ({
-        name: emission.element,
-        value: emission.maximumCalculations.max,
-      }))
+      ? findMaxForEmissionCalculations(emissionCalculations)
       : [];
 
   return (
@@ -71,6 +66,7 @@ export const EmissionsChartModal = ({
             <tr>
               <th title="Елемент">Елемент</th>
               <th title="Середовище">Середовище</th>
+              <th title="Дата">Дата</th>
               <th title="Одиниця виміру">Одиниця виміру</th>
               <th title="Середнє значення average викидів">
                 Середнє значення average викидів
@@ -102,6 +98,7 @@ export const EmissionsChartModal = ({
                 <tr key={id}>
                   <td title={emission.element}>{emission.element}</td>
                   <td title={emission.element}>{emission.idEnvironment}</td>
+                  <td title={emission.date}>{`${emission.date.day}/${emission.date.month}/${emission.date.year}`}</td>
                   <td title={emission.measure}>{emission.measure}</td>
                   <td title={emission.averageCalculations.average}>
                     {emission.averageCalculations.average.toFixed(
@@ -133,10 +130,10 @@ export const EmissionsChartModal = ({
         )}
       <div className="d-flex justify-content-around">
         {chartAverageData.length > 0 && (
-          <Chart title="Сума середніх викидів" data={chartAverageData} />
+          <Chart title="Графік середніх викидів" data={chartAverageData} />
         )}
         {chartMaxData.length > 0 && (
-          <Chart title="Сума максимальних викидів" data={chartMaxData} />
+          <Chart title="Графік максимальних викидів" data={chartMaxData} />
         )}
       </div>
       <h4 className="mb-3">
