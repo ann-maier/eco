@@ -15,7 +15,7 @@ export const MenuView = ({ user, setUser }) => {
     <Nav className='justify-content-between container mt-2 mb-2'>
       <Nav.Item className='d-flex align-items-center'>
         <Nav.Item>
-          <Link to='/'>Home</Link>
+          <Link to='/'>Домашня сторінка</Link>
         </Nav.Item>
         <NavDropdown title='Карти зображень'>
           <NavDropdown.Item>Вода</NavDropdown.Item>
@@ -27,11 +27,9 @@ export const MenuView = ({ user, setUser }) => {
       </Nav.Item>
       <Nav.Item>
         {user ? (
-          <div className='d-flex'>
-            <h3 className='mr-2'>Welcome, {user.user_name} ({user.expert_name})</h3>
-            <Button variant='outline-secondary' size='sm' onClick={() => logOut()}>
-              Log Out
-            </Button>
+          <div className='d-flex align-items-center'>
+            <h4 className='mr-2 mb-0'>Вітаємо, {user.user_name} ({user.expert_name})</h4>
+            <Button variant='outline-secondary' size='md' onClick={logOut}>Вийти</Button>
           </div>
 
         ) : (

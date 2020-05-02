@@ -4,6 +4,8 @@ import { Button, Dropdown, Form, Alert } from "react-bootstrap";
 import { ELEMENTS_URL, ENVIRONMENTS_URL, GDK_URL } from "../utils/constants";
 import { post, get } from "../utils/httpService";
 
+import "./submitForm.css";
+
 const now = new Date();
 const year = now.getFullYear();
 const month = ('0' + (now.getMonth() + 1)).slice(-2);
@@ -125,7 +127,6 @@ export const SubmitForm = ({ onSave }) => {
                             <Dropdown.Menu>
                                 {environments.length && environments.map(environment => (
                                     <Dropdown.Item
-                                        disabled={environment.id !== 4} // TODO: remove this shitey ASAP
                                         key={environment.id}
                                         onClick={() => setEnvironment(environment)}
                                     >
@@ -172,11 +173,7 @@ export const SubmitForm = ({ onSave }) => {
                             <Dropdown.Toggle size='sm' variant='success'>
                                 {selectedElement.short_name}
                             </Dropdown.Toggle>
-                            <Dropdown.Menu
-                                style={{
-                                    height: '500px',
-                                    overflowY: 'scroll',
-                                }}>
+                            <Dropdown.Menu className="form-dropdown">
                                 {elements.length && elements.map(element => (
                                     <Dropdown.Item
                                         key={element.code}
