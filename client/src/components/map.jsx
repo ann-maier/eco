@@ -18,6 +18,8 @@ import { AddPolygonModal } from './addPolygonModal';
 import { Filtration } from './filtration';
 
 import './map.css';
+import EnvironmentsInfoContext from './context/environmentsInfoContext';
+import { useContext } from 'react';
 
 const initialState = {
   points: [],
@@ -100,12 +102,17 @@ export const MapView = ({ user }) => {
   );
   const [polygonId, setPolygonId] = useState(initialState.polygonId);
 
+  //environmentsInfo
+  const { environmentsInfo } = useContext(EnvironmentsInfoContext);
+
   const fetchData = () => {
-    get(POLYGONS_URL).then(({ data }) => {
+    const idEnvironment = environmentsInfo.selected.id;
+
+    get(`${POLYGONS_URL}?idEnvironment=${idEnvironment}`).then(({ data }) => {
       setFilteredPolygons(data);
       initialState.polygons = data;
     });
-    get(POINTS_URL).then(({ data }) => {
+    get(`${POINTS_URL}?idEnvironment=${idEnvironment}`).then(({ data }) => {
       setFilteredPoints(data);
       initialState.points = data;
     });
