@@ -118,3 +118,29 @@ export const findMaxForEmissionCalculations = (emissionCalculations) => {
     return temp;
   });
 };
+
+export const formatEmissionsLineChart = (emissionCalculations) => {
+  const elementNames = [];
+
+  emissionCalculations.forEach((emission) => {
+    if (!elementNames.includes(emission.element)) {
+      elementNames.push(emission.element);
+    }
+  });
+
+  return elementNames.reduce((obj, name) => {
+    const temp = [];
+    emissionCalculations.forEach((emission) => {
+      if (name === emission.element) {
+        temp.push({
+          name: `${emission.date.day}-${emission.date.month}-${emission.date.year}`,
+          'Середнє значення': emission.averageCalculations.average,
+          'Максимальне значення': emission.maximumCalculations.max,
+        });
+      }
+    });
+    obj[name] = temp;
+
+    return obj;
+  }, {});
+};

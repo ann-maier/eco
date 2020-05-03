@@ -3,11 +3,11 @@ import { Table } from "react-bootstrap";
 
 import { get } from "../utils/httpService";
 import { EMISSIONS_CALCULATIONS_URL } from "../utils/constants";
-import { findAverageForEmissionCalculations, findMaxForEmissionCalculations } from '../utils/helpers';
+import { findAverageForEmissionCalculations, findMaxForEmissionCalculations, formatEmissionsLineChart } from '../utils/helpers';
 
 import { VerticallyCenteredModal } from "./modal";
 import { Chart } from "./chart";
-import { EmissionsBarChart } from "./emissionsBarChart";
+import { EmissionLineChart } from "./emissionsLineChart";
 import { DateRangePickerView } from "./dateRangePicker";
 
 import "./emissionsChartModal.css";
@@ -82,23 +82,25 @@ export const EmissionsChartModal = ({
             {emissionCalculations.map((emission, id) => {
               const exceedingByAverage = emission.averageCalculations.gdkAverage
                 ? (
-                  emission.averageCalculations.gdkAverage -
-                  emission.averageCalculations.average
-                ).toFixed(valuesPrecision)
+                    emission.averageCalculations.gdkAverage -
+                    emission.averageCalculations.average
+                  ).toFixed(valuesPrecision)
                 : emptyState;
 
               const exceedingByMaximum = emission.maximumCalculations.gdkMax
                 ? (
-                  emission.maximumCalculations.gdkMax -
-                  emission.maximumCalculations.max
-                ).toFixed(valuesPrecision)
+                    emission.maximumCalculations.gdkMax -
+                    emission.maximumCalculations.max
+                  ).toFixed(valuesPrecision)
                 : emptyState;
 
               return (
                 <tr key={id}>
                   <td title={emission.element}>{emission.element}</td>
                   <td title={emission.element}>{emission.idEnvironment}</td>
-                  <td title={emission.date}>{`${emission.date.day}/${emission.date.month}/${emission.date.year}`}</td>
+                  <td
+                    title={emission.date}
+                  >{`${emission.date.day}/${emission.date.month}/${emission.date.year}`}</td>
                   <td title={emission.measure}>{emission.measure}</td>
                   <td title={emission.averageCalculations.average}>
                     {emission.averageCalculations.average.toFixed(
@@ -126,8 +128,10 @@ export const EmissionsChartModal = ({
           </tbody>
         </Table>
       ) : (
-          <h6 className="mt-3 mb-3">Немає інформації про викиди за обраний період</h6>
-        )}
+        <h6 className="mt-3 mb-3">
+          Немає інформації про викиди за обраний період
+        </h6>
+      )}
       <div className="d-flex justify-content-around">
         {chartAverageData.length > 0 && (
           <Chart title="Графік середніх викидів" data={chartAverageData} />
@@ -136,10 +140,16 @@ export const EmissionsChartModal = ({
           <Chart title="Графік максимальних викидів" data={chartMaxData} />
         )}
       </div>
-      <h4 className="mb-3">
-        Оберіть елемент та рік для відображення викидів за допомогою стовпчастої діаграми
-      </h4>
-      <EmissionsBarChart emissions={emissions} />
+      {emissionCalculations.length > 0 && (
+        <>
+          <h4 className="mb-3">
+            Оберіть елемент та для відображення викидів за допомогою графіка
+          </h4>
+          <EmissionLineChart
+            emissions={formatEmissionsLineChart(emissionCalculations)}
+          />
+        </>
+      )}
     </VerticallyCenteredModal>
   );
 };
