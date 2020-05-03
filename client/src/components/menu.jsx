@@ -19,9 +19,9 @@ export const MenuView = ({ user, setUser }) => {
     sessionStorage.removeItem('user');
   };
 
-  const selectEnvironment = (selectedId) => {
+  const selectEnvironment = (id) => {
     const selectedEnvironment = environmentsInfo.environments.find(
-      ({ id }) => +selectedId === +id
+      ({ id: environmentId }) => +environmentId === +id
     );
 
     setEnvironmentsInfo({

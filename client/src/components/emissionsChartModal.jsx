@@ -72,7 +72,6 @@ export const EmissionsChartModal = ({
           <thead>
             <tr>
               <th title='Елемент'>Елемент</th>
-              {/* <th title='Середовище'>Середовище</th> */}
               <th title='Дата'>Дата</th>
               <th title='Одиниця виміру'>Одиниця виміру</th>
               <th title='Середнє значення average викидів'>
@@ -104,7 +103,6 @@ export const EmissionsChartModal = ({
               return (
                 <tr key={id}>
                   <td title={emission.element}>{emission.element}</td>
-                  {/* <td title={emission.element}>{emission.idEnvironment}</td> */}
                   <td
                     title={emission.date}
                   >{`${emission.date.day}/${emission.date.month}/${emission.date.year}`}</td>
