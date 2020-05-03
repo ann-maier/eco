@@ -103,10 +103,20 @@ export const MapView = ({ user }) => {
   const [polygonId, setPolygonId] = useState(initialState.polygonId);
 
   //environmentsInfo
-  const { environmentsInfo } = useContext(EnvironmentsInfoContext);
+  const { environmentsInfo, setEnvironmentsInfo } = useContext(
+    EnvironmentsInfoContext
+  );
 
   const fetchData = () => {
-    const idEnvironment = environmentsInfo.selected.id;
+    // consider this
+    if (!environmentsInfo.selected) {
+      setEnvironmentsInfo({
+        selected: environmentsInfo.environments[0],
+        environments: environmentsInfo.environments,
+      });
+    }
+
+    const idEnvironment = environmentsInfo.selected;
 
     get(`${POLYGONS_URL}?idEnvironment=${idEnvironment}`).then(({ data }) => {
       setFilteredPolygons(data);
@@ -124,12 +134,13 @@ export const MapView = ({ user }) => {
   const filterByUser = ({ id_of_user: idOfUser }) =>
     filteredItems.items.some(({ id_of_user }) => idOfUser === id_of_user);
 
+  // take a look on it
   useEffect(() => {
-    if (shouldFetchData) {
+    if (shouldFetchData && environmentsInfo.environments.length) {
       fetchData();
       setShouldFetchData(false);
     }
-  }, [shouldFetchData]);
+  }, [shouldFetchData, environmentsInfo.environments.length]);
 
   useEffect(() => {
     if (filteredItems.items.length) {

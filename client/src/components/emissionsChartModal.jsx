@@ -1,19 +1,23 @@
-import React from "react";
-import { Table } from "react-bootstrap";
+import React, { useContext } from 'react';
+import { Table } from 'react-bootstrap';
 
-import { get } from "../utils/httpService";
-import { EMISSIONS_CALCULATIONS_URL } from "../utils/constants";
-import { findAverageForEmissionCalculations, findMaxForEmissionCalculations } from '../utils/helpers';
+import { get } from '../utils/httpService';
+import { EMISSIONS_CALCULATIONS_URL } from '../utils/constants';
+import {
+  findAverageForEmissionCalculations,
+  findMaxForEmissionCalculations,
+} from '../utils/helpers';
 
-import { VerticallyCenteredModal } from "./modal";
-import { Chart } from "./chart";
-import { EmissionsBarChart } from "./emissionsBarChart";
-import { DateRangePickerView } from "./dateRangePicker";
+import { VerticallyCenteredModal } from './modal';
+import { Chart } from './chart';
+import { EmissionsBarChart } from './emissionsBarChart';
+import { DateRangePickerView } from './dateRangePicker';
 
-import "./emissionsChartModal.css";
+import './emissionsChartModal.css';
+import EnvironmentsInfoContext from './context/environmentsInfoContext';
 
 const valuesPrecision = 2;
-const emptyState = "Немає даних";
+const emptyState = 'Немає даних';
 
 export const EmissionsChartModal = ({
   id,
@@ -22,7 +26,8 @@ export const EmissionsChartModal = ({
   show,
   emissions,
 }) => {
-  const param = isPoint ? "idPoi" : "idPolygon";
+  const { environmentsInfo } = useContext(EnvironmentsInfoContext);
+  const param = isPoint ? 'idPoi' : 'idPolygon';
   const [emissionCalculations, setEmissionCalculations] = React.useState([]);
 
   React.useEffect(() => {
@@ -30,9 +35,11 @@ export const EmissionsChartModal = ({
   }, [id]);
 
   const getEmissionCalculations = (id) => {
-    get(`${EMISSIONS_CALCULATIONS_URL}?${param}=${id}`).then(({ data }) =>
-      setEmissionCalculations(data)
-    );
+    const idEnvironment = environmentsInfo.selected.id;
+
+    get(
+      `${EMISSIONS_CALCULATIONS_URL}?idEnvironment=${idEnvironment}&${param}=${id}`
+    ).then(({ data }) => setEmissionCalculations(data));
   };
 
   const chartAverageData =
@@ -47,12 +54,12 @@ export const EmissionsChartModal = ({
 
   return (
     <VerticallyCenteredModal
-      size="xl"
+      size='xl'
       show={show}
       onHide={onHide}
-      header="Відобразити викиди"
+      header='Відобразити викиди'
     >
-      <h4 className="mb-3">
+      <h4 className='mb-3'>
         Оберіть дати для відображення викидів за певний період
       </h4>
       <DateRangePickerView
@@ -61,44 +68,46 @@ export const EmissionsChartModal = ({
         setEmissionCalculations={setEmissionCalculations}
       />
       {emissionCalculations.length > 0 ? (
-        <Table className="emissions-table">
+        <Table className='emissions-table'>
           <thead>
             <tr>
-              <th title="Елемент">Елемент</th>
-              <th title="Середовище">Середовище</th>
-              <th title="Дата">Дата</th>
-              <th title="Одиниця виміру">Одиниця виміру</th>
-              <th title="Середнє значення average викидів">
+              <th title='Елемент'>Елемент</th>
+              {/* <th title='Середовище'>Середовище</th> */}
+              <th title='Дата'>Дата</th>
+              <th title='Одиниця виміру'>Одиниця виміру</th>
+              <th title='Середнє значення average викидів'>
                 Середнє значення average викидів
               </th>
-              <th title="ГДК average">ГДК average</th>
-              <th title="Перевищення ГДК average">Перевищення ГДК average</th>
-              <th title="Max викидів">Max викидів</th>
-              <th title="ГДК max">ГДК max</th>
-              <th title="Перевищення ГДК max">Перевищення ГДК max</th>
+              <th title='ГДК average'>ГДК average</th>
+              <th title='Перевищення ГДК average'>Перевищення ГДК average</th>
+              <th title='Max викидів'>Max викидів</th>
+              <th title='ГДК max'>ГДК max</th>
+              <th title='Перевищення ГДК max'>Перевищення ГДК max</th>
             </tr>
           </thead>
           <tbody>
             {emissionCalculations.map((emission, id) => {
               const exceedingByAverage = emission.averageCalculations.gdkAverage
                 ? (
-                  emission.averageCalculations.gdkAverage -
-                  emission.averageCalculations.average
-                ).toFixed(valuesPrecision)
+                    emission.averageCalculations.gdkAverage -
+                    emission.averageCalculations.average
+                  ).toFixed(valuesPrecision)
                 : emptyState;
 
               const exceedingByMaximum = emission.maximumCalculations.gdkMax
                 ? (
-                  emission.maximumCalculations.gdkMax -
-                  emission.maximumCalculations.max
-                ).toFixed(valuesPrecision)
+                    emission.maximumCalculations.gdkMax -
+                    emission.maximumCalculations.max
+                  ).toFixed(valuesPrecision)
                 : emptyState;
 
               return (
                 <tr key={id}>
                   <td title={emission.element}>{emission.element}</td>
-                  <td title={emission.element}>{emission.idEnvironment}</td>
-                  <td title={emission.date}>{`${emission.date.day}/${emission.date.month}/${emission.date.year}`}</td>
+                  {/* <td title={emission.element}>{emission.idEnvironment}</td> */}
+                  <td
+                    title={emission.date}
+                  >{`${emission.date.day}/${emission.date.month}/${emission.date.year}`}</td>
                   <td title={emission.measure}>{emission.measure}</td>
                   <td title={emission.averageCalculations.average}>
                     {emission.averageCalculations.average.toFixed(
@@ -126,18 +135,21 @@ export const EmissionsChartModal = ({
           </tbody>
         </Table>
       ) : (
-          <h6 className="mt-3 mb-3">Немає інформації про викиди за обраний період</h6>
-        )}
-      <div className="d-flex justify-content-around">
+        <h6 className='mt-3 mb-3'>
+          Немає інформації про викиди за обраний період
+        </h6>
+      )}
+      <div className='d-flex justify-content-around'>
         {chartAverageData.length > 0 && (
-          <Chart title="Графік середніх викидів" data={chartAverageData} />
+          <Chart title='Графік середніх викидів' data={chartAverageData} />
         )}
         {chartMaxData.length > 0 && (
-          <Chart title="Графік максимальних викидів" data={chartMaxData} />
+          <Chart title='Графік максимальних викидів' data={chartMaxData} />
         )}
       </div>
-      <h4 className="mb-3">
-        Оберіть елемент та рік для відображення викидів за допомогою стовпчастої діаграми
+      <h4 className='mb-3'>
+        Оберіть елемент та рік для відображення викидів за допомогою стовпчастої
+        діаграми
       </h4>
       <EmissionsBarChart emissions={emissions} />
     </VerticallyCenteredModal>

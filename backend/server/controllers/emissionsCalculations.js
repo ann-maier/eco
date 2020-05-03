@@ -1,15 +1,17 @@
-const pool = require("../../db-config/mysql-config");
+const pool = require('../../db-config/mysql-config');
 
-const { formatDateForDatabase } = require("../utils/formatDateForDatabase");
+const { formatDateForDatabase } = require('../utils/formatDateForDatabase');
 
 const getEmissionsCalculations = (req, res) => {
   const {
+    idEnvironment,
     idPoi,
     idPolygon,
     startDate: startDateISOString,
     endDate: endDateISOString,
   } = req.query;
-  const typeOfObject = idPoi ? "idPoi" : "idPoligon";
+
+  const typeOfObject = idPoi ? 'idPoi' : 'idPoligon';
   const id = idPoi || idPolygon;
 
   const shouldFilterByDates = !!startDateISOString && !!endDateISOString;
@@ -40,8 +42,11 @@ const getEmissionsCalculations = (req, res) => {
       emissions_on_map
     INNER JOIN elements ON emissions_on_map.idElement = elements.code
     LEFT JOIN gdk ON emissions_on_map.idElement = gdk.code AND emissions_on_map.idEnvironment = gdk.environment
-    WHERE ${typeOfObject} = ${id}
-    ${shouldFilterByDates ? queryForFilteringByDates : ""}
+    WHERE 
+      ${typeOfObject} = ${id}
+    AND
+      idEnvironment=${idEnvironment}
+    ${shouldFilterByDates ? queryForFilteringByDates : ''}
     ;
   `;
 
