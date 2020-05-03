@@ -128,23 +128,20 @@ export const MapView = ({ user }) => {
     filteredItems.items.some(({ id_of_user }) => idOfUser === id_of_user);
 
   useEffect(() => {
-    if (shouldFetchData && environmentsInfo.selected) {
-      fetchData();
-      setShouldFetchData(false);
-    }
-
-    // take a look on  this useEffect
     if (environmentsInfo.environments.length && !environmentsInfo.selected) {
       setEnvironmentsInfo({
         selected: environmentsInfo.environments[0],
         environments: environmentsInfo.environments,
       });
     }
-  }, [
-    shouldFetchData,
-    environmentsInfo.environments,
-    environmentsInfo.selected,
-  ]);
+  }, [environmentsInfo.environments]);
+
+  useEffect(() => {
+    if (shouldFetchData && environmentsInfo.selected) {
+      fetchData();
+      setShouldFetchData(false);
+    }
+  }, [shouldFetchData, environmentsInfo.selected]);
 
   useEffect(() => {
     if (filteredItems.items.length) {
