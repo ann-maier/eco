@@ -6,7 +6,7 @@ import { uk } from 'date-fns/locale';
 import { EMISSIONS_CALCULATIONS_URL } from '../utils/constants';
 import { get } from '../utils/httpService';
 import { useContext } from 'react';
-import EnvironmentsInfoContext from './context/environmentsInfoContext';
+import { EnvironmentsInfoContext } from './context/environmentsInfoContext';
 
 export const DateRangePickerView = ({ id, param, setEmissionCalculations }) => {
   const { environmentsInfo } = useContext(EnvironmentsInfoContext);

@@ -14,7 +14,7 @@ import { EmissionsBarChart } from './emissionsBarChart';
 import { DateRangePickerView } from './dateRangePicker';
 
 import './emissionsChartModal.css';
-import EnvironmentsInfoContext from './context/environmentsInfoContext';
+import { EnvironmentsInfoContext } from './context/environmentsInfoContext';
 
 const valuesPrecision = 2;
 const emptyState = 'Немає даних';

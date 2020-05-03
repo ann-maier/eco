@@ -5,8 +5,6 @@ export const environmentsInfoInitialState = {
   environments: [],
 };
 
-const EnvironmentsInfoContext = createContext(environmentsInfoInitialState);
-
-export const EnvironmentsInfoContextProvider = EnvironmentsInfoContext.Provider;
-
-export default EnvironmentsInfoContext;
+export const EnvironmentsInfoContext = createContext(
+  environmentsInfoInitialState
+);

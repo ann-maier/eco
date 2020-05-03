@@ -5,7 +5,7 @@ import { Login } from './login';
 import Nav from 'react-bootstrap/Nav';
 import { Button, NavDropdown } from 'react-bootstrap';
 import { useContext } from 'react';
-import EnvironmentsInfoContext from './context/environmentsInfoContext';
+import { EnvironmentsInfoContext } from './context/environmentsInfoContext';
 
 export const MenuView = ({ user, setUser }) => {
   const history = useHistory();
@@ -34,7 +34,7 @@ export const MenuView = ({ user, setUser }) => {
 
   const isActive = (id) => {
     const { selected } = environmentsInfo;
-    if (!!selected) {
+    if (selected) {
       return id === selected.id;
     }
 

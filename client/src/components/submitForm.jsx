@@ -6,7 +6,7 @@ import { post, get } from '../utils/httpService';
 
 import './submitForm.css';
 import { useContext } from 'react';
-import EnvironmentsInfoContext from './context/environmentsInfoContext';
+import { EnvironmentsInfoContext } from './context/environmentsInfoContext';
 
 const now = new Date();
 const year = now.getFullYear();

@@ -12,7 +12,7 @@ import { get } from './utils/httpService';
 import { ENVIRONMENTS_URL } from './utils/constants';
 
 import {
-  EnvironmentsInfoContextProvider,
+  EnvironmentsInfoContext,
   environmentsInfoInitialState,
 } from './components/context/environmentsInfoContext';
 
@@ -38,7 +38,7 @@ export const App = () => {
   return (
     <Router>
       <div className='App'>
-        <EnvironmentsInfoContextProvider
+        <EnvironmentsInfoContext.Provider
           value={{ environmentsInfo, setEnvironmentsInfo }}
         >
           <MenuView user={user} setUser={setUser} />
@@ -46,7 +46,7 @@ export const App = () => {
             <Route exact path='/' component={Home} />
             <Route path='/earth' component={() => <MapView user={user} />} />
           </Switch>
-        </EnvironmentsInfoContextProvider>
+        </EnvironmentsInfoContext.Provider>
       </div>
     </Router>
   );

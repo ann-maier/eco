@@ -18,7 +18,7 @@ import { AddPolygonModal } from './addPolygonModal';
 import { Filtration } from './filtration';
 
 import './map.css';
-import EnvironmentsInfoContext from './context/environmentsInfoContext';
+import { EnvironmentsInfoContext } from './context/environmentsInfoContext';
 import { useContext } from 'react';
 
 const initialState = {
