@@ -108,20 +108,13 @@ export const MapView = ({ user }) => {
   );
 
   const fetchData = () => {
-    // consider this
-    if (!environmentsInfo.selected) {
-      setEnvironmentsInfo({
-        selected: environmentsInfo.environments[0],
-        environments: environmentsInfo.environments,
-      });
-    }
-
-    const idEnvironment = environmentsInfo.selected;
+    const idEnvironment = environmentsInfo.selected.id;
 
     get(`${POLYGONS_URL}?idEnvironment=${idEnvironment}`).then(({ data }) => {
       setFilteredPolygons(data);
       initialState.polygons = data;
     });
+
     get(`${POINTS_URL}?idEnvironment=${idEnvironment}`).then(({ data }) => {
       setFilteredPoints(data);
       initialState.points = data;
@@ -134,13 +127,24 @@ export const MapView = ({ user }) => {
   const filterByUser = ({ id_of_user: idOfUser }) =>
     filteredItems.items.some(({ id_of_user }) => idOfUser === id_of_user);
 
-  // take a look on it
   useEffect(() => {
-    if (shouldFetchData && environmentsInfo.environments.length) {
+    if (shouldFetchData && environmentsInfo.selected) {
       fetchData();
       setShouldFetchData(false);
     }
-  }, [shouldFetchData, environmentsInfo.environments.length]);
+
+    // take a look on  this useEffect
+    if (environmentsInfo.environments.length && !environmentsInfo.selected) {
+      setEnvironmentsInfo({
+        selected: environmentsInfo.environments[0],
+        environments: environmentsInfo.environments,
+      });
+    }
+  }, [
+    shouldFetchData,
+    environmentsInfo.environments,
+    environmentsInfo.selected,
+  ]);
 
   useEffect(() => {
     if (filteredItems.items.length) {
