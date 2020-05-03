@@ -3,6 +3,7 @@ import { Table } from "react-bootstrap";
 
 import { get } from "../utils/httpService";
 import { EMISSIONS_CALCULATIONS_URL } from "../utils/constants";
+import { findAverageForEmissionCalculations, findMaxForEmissionCalculations } from '../utils/helpers';
 
 import { VerticallyCenteredModal } from "./modal";
 import { Chart } from "./chart";
@@ -36,25 +37,24 @@ export const EmissionsChartModal = ({
 
   const chartAverageData =
     emissionCalculations && emissionCalculations.length > 0
-      ? emissionCalculations.map((emission) => ({
-          name: emission.element,
-          value: emission.averageCalculations.average,
-        }))
+      ? findAverageForEmissionCalculations(emissionCalculations)
       : [];
 
   const chartMaxData =
     emissionCalculations && emissionCalculations.length > 0
-      ? emissionCalculations.map((emission) => ({
-          name: emission.element,
-          value: emission.maximumCalculations.max,
-        }))
+      ? findMaxForEmissionCalculations(emissionCalculations)
       : [];
 
   return (
-    <VerticallyCenteredModal size="xl" show={show} onHide={onHide} header="Відобразити викиди">
-      <h3 className="mb-3">
+    <VerticallyCenteredModal
+      size="xl"
+      show={show}
+      onHide={onHide}
+      header="Відобразити викиди"
+    >
+      <h4 className="mb-3">
         Оберіть дати для відображення викидів за певний період
-      </h3>
+      </h4>
       <DateRangePickerView
         id={id}
         param={param}
@@ -66,6 +66,7 @@ export const EmissionsChartModal = ({
             <tr>
               <th title="Елемент">Елемент</th>
               <th title="Середовище">Середовище</th>
+              <th title="Дата">Дата</th>
               <th title="Одиниця виміру">Одиниця виміру</th>
               <th title="Середнє значення average викидів">
                 Середнє значення average викидів
@@ -81,22 +82,23 @@ export const EmissionsChartModal = ({
             {emissionCalculations.map((emission, id) => {
               const exceedingByAverage = emission.averageCalculations.gdkAverage
                 ? (
-                    emission.averageCalculations.gdkAverage -
-                    emission.averageCalculations.average
-                  ).toFixed(valuesPrecision)
+                  emission.averageCalculations.gdkAverage -
+                  emission.averageCalculations.average
+                ).toFixed(valuesPrecision)
                 : emptyState;
 
               const exceedingByMaximum = emission.maximumCalculations.gdkMax
                 ? (
-                    emission.maximumCalculations.gdkMax -
-                    emission.maximumCalculations.max
-                  ).toFixed(valuesPrecision)
+                  emission.maximumCalculations.gdkMax -
+                  emission.maximumCalculations.max
+                ).toFixed(valuesPrecision)
                 : emptyState;
 
               return (
                 <tr key={id}>
                   <td title={emission.element}>{emission.element}</td>
                   <td title={emission.element}>{emission.idEnvironment}</td>
+                  <td title={emission.date}>{`${emission.date.day}/${emission.date.month}/${emission.date.year}`}</td>
                   <td title={emission.measure}>{emission.measure}</td>
                   <td title={emission.averageCalculations.average}>
                     {emission.averageCalculations.average.toFixed(
@@ -124,13 +126,20 @@ export const EmissionsChartModal = ({
           </tbody>
         </Table>
       ) : (
-        <h5 className="mb-3">Немає інформації про викиди за обраний період</h5>
-      )}
+          <h6 className="mt-3 mb-3">Немає інформації про викиди за обраний період</h6>
+        )}
+      <div className="d-flex justify-content-around">
+        {chartAverageData.length > 0 && (
+          <Chart title="Графік середніх викидів" data={chartAverageData} />
+        )}
+        {chartMaxData.length > 0 && (
+          <Chart title="Графік максимальних викидів" data={chartMaxData} />
+        )}
+      </div>
+      <h4 className="mb-3">
+        Оберіть елемент та рік для відображення викидів за допомогою стовпчастої діаграми
+      </h4>
       <EmissionsBarChart emissions={emissions} />
-      <h3>Сума average викидів</h3>
-      <Chart data={chartAverageData} />
-      <h3>Сума max викидів</h3>
-      <Chart data={chartMaxData} />
     </VerticallyCenteredModal>
   );
 };

@@ -3,7 +3,12 @@ const pool = require("../../db-config/mysql-config");
 const { formatDateForDatabase } = require("../utils/formatDateForDatabase");
 
 const getEmissionsCalculations = (req, res) => {
-  const { idPoi, idPolygon, startDate: startDateISOString, endDate: endDateISOString } = req.query;
+  const {
+    idPoi,
+    idPolygon,
+    startDate: startDateISOString,
+    endDate: endDateISOString,
+  } = req.query;
   const typeOfObject = idPoi ? "idPoi" : "idPoligon";
   const id = idPoi || idPolygon;
 
@@ -11,7 +16,10 @@ const getEmissionsCalculations = (req, res) => {
 
   let queryForFilteringByDates;
   if (shouldFilterByDates) {
-    const { stateDate, endDate } = { stateDate: formatDateForDatabase(startDateISOString), endDate: formatDateForDatabase(endDateISOString) };
+    const { stateDate, endDate } = {
+      stateDate: formatDateForDatabase(startDateISOString),
+      endDate: formatDateForDatabase(endDateISOString),
+    };
     queryForFilteringByDates = `HAVING Formatted_Date >= '${stateDate}' and Formatted_Date < '${endDate}' + interval 1 day`;
   }
 
@@ -19,8 +27,11 @@ const getEmissionsCalculations = (req, res) => {
     SELECT
       elements.short_name,
       idEnvironment,
-      AVG(ValueAvg) AS averageFromAverageEmissions,
-      MAX(ValueMax) AS maxFromMaximumEmissions,
+      Year,
+      Month,
+      day,
+      ValueAvg AS averageFromAverageEmissions,
+      ValueMax AS maxFromMaximumEmissions,
       elements.Measure,
       gdk.mpc_avrg_d,
       gdk.mpc_m_ot,
@@ -30,11 +41,10 @@ const getEmissionsCalculations = (req, res) => {
     INNER JOIN elements ON emissions_on_map.idElement = elements.code
     LEFT JOIN gdk ON emissions_on_map.idElement = gdk.code AND emissions_on_map.idEnvironment = gdk.environment
     WHERE ${typeOfObject} = ${id}
-    GROUP BY idEnvironment, idElement
-    ${shouldFilterByDates ? queryForFilteringByDates : ''}
+    ${shouldFilterByDates ? queryForFilteringByDates : ""}
     ;
   `;
-  
+
   return pool.query(query, [], (error, rows) => {
     if (error) {
       return res.status(500).send({
@@ -46,6 +56,9 @@ const getEmissionsCalculations = (req, res) => {
       ({
         short_name: shortName,
         idEnvironment,
+        Year,
+        Month,
+        day,
         averageFromAverageEmissions,
         maxFromMaximumEmissions,
         mpc_avrg_d: gdkAverage,
@@ -55,6 +68,11 @@ const getEmissionsCalculations = (req, res) => {
         return {
           element: shortName,
           idEnvironment,
+          date: {
+            year: Year,
+            month: Month,
+            day,
+          },
           averageCalculations: {
             average: averageFromAverageEmissions,
             gdkAverage,
