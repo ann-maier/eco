@@ -5,6 +5,8 @@ const iconsMapPromise = require('../utils/iconsMap')();
 const { getEmissionsOnMap, SOURCE_POI } = require('./emissions_on_map');
 
 const getPoints = (req, res) => {
+  const { idEnvironment } = req.query;
+
   const query = `
   SELECT 
     poi.Id,
@@ -60,7 +62,11 @@ const getPoints = (req, res) => {
           owner_type_id,
           owner_type_name,
         }) => {
-          const emissionsOnMapPromise = getEmissionsOnMap(SOURCE_POI, Id);
+          const emissionsOnMapPromise = getEmissionsOnMap(
+            SOURCE_POI,
+            Id,
+            idEnvironment
+          );
           return Promise.all([emissionsOnMapPromise, iconsMapPromise]).then(
             ([emissions, iconsMap]) => ({
               Id,

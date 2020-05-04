@@ -18,6 +18,8 @@ import { AddPolygonModal } from './addPolygonModal';
 import { Filtration } from './filtration';
 
 import './map.css';
+import { EnvironmentsInfoContext } from './context/environmentsInfoContext';
+import { useContext } from 'react';
 
 const initialState = {
   points: [],
@@ -100,12 +102,20 @@ export const MapView = ({ user }) => {
   );
   const [polygonId, setPolygonId] = useState(initialState.polygonId);
 
+  //environmentsInfo
+  const { environmentsInfo, setEnvironmentsInfo } = useContext(
+    EnvironmentsInfoContext
+  );
+
   const fetchData = () => {
-    get(POLYGONS_URL).then(({ data }) => {
+    const idEnvironment = environmentsInfo.selected.id;
+
+    get(`${POLYGONS_URL}?idEnvironment=${idEnvironment}`).then(({ data }) => {
       setFilteredPolygons(data);
       initialState.polygons = data;
     });
-    get(POINTS_URL).then(({ data }) => {
+
+    get(`${POINTS_URL}?idEnvironment=${idEnvironment}`).then(({ data }) => {
       setFilteredPoints(data);
       initialState.points = data;
     });
@@ -118,11 +128,20 @@ export const MapView = ({ user }) => {
     filteredItems.items.some(({ id_of_user }) => idOfUser === id_of_user);
 
   useEffect(() => {
-    if (shouldFetchData) {
+    if (environmentsInfo.environments.length && !environmentsInfo.selected) {
+      setEnvironmentsInfo({
+        selected: environmentsInfo.environments[0],
+        environments: environmentsInfo.environments,
+      });
+    }
+  }, [environmentsInfo.environments]);
+
+  useEffect(() => {
+    if (shouldFetchData && environmentsInfo.selected) {
       fetchData();
       setShouldFetchData(false);
     }
-  }, [shouldFetchData]);
+  }, [shouldFetchData, environmentsInfo.selected]);
 
   useEffect(() => {
     if (filteredItems.items.length) {
