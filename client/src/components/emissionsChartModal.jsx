@@ -3,15 +3,14 @@ import { Table } from 'react-bootstrap';
 
 import { get } from '../utils/httpService';
 import { EMISSIONS_CALCULATIONS_URL } from '../utils/constants';
-import {
-  findAverageForEmissionCalculations,
-  findMaxForEmissionCalculations,
-} from '../utils/helpers';
+
+import { findAverageForEmissionCalculations, findMaxForEmissionCalculations, formatEmissionsLineChart } from '../utils/helpers';
 
 import { VerticallyCenteredModal } from './modal';
 import { Chart } from './chart';
 import { EmissionsBarChart } from './emissionsBarChart';
 import { DateRangePickerView } from './dateRangePicker';
+import { EmissionLineChart } from "./emissionsLineChart";
 
 import './emissionsChartModal.css';
 import { EnvironmentsInfoContext } from './context/environmentsInfoContext';
@@ -137,19 +136,24 @@ export const EmissionsChartModal = ({
           Немає інформації про викиди за обраний період
         </h6>
       )}
-      <div className='d-flex justify-content-around'>
+      <div className="d-flex justify-content-around">
         {chartAverageData.length > 0 && (
-          <Chart title='Графік середніх викидів' data={chartAverageData} />
+          <Chart title="Графік середніх викидів" data={chartAverageData} />
         )}
         {chartMaxData.length > 0 && (
-          <Chart title='Графік максимальних викидів' data={chartMaxData} />
+          <Chart title="Графік максимальних викидів" data={chartMaxData} />
         )}
       </div>
-      <h4 className='mb-3'>
-        Оберіть елемент та рік для відображення викидів за допомогою стовпчастої
-        діаграми
-      </h4>
-      <EmissionsBarChart emissions={emissions} />
+      {emissionCalculations.length > 0 && (
+        <>
+          <h4 className='mb-3'>
+            Оберіть елемент та для відображення викидів за допомогою графіка
+          </h4>
+          <EmissionLineChart
+            emissions={formatEmissionsLineChart(emissionCalculations)}
+          />
+        </>
+      )}
     </VerticallyCenteredModal>
   );
 };
