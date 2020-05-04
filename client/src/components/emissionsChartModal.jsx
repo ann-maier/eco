@@ -8,7 +8,6 @@ import { findAverageForEmissionCalculations, findMaxForEmissionCalculations, for
 
 import { VerticallyCenteredModal } from './modal';
 import { Chart } from './chart';
-import { EmissionsBarChart } from './emissionsBarChart';
 import { DateRangePickerView } from './dateRangePicker';
 import { EmissionLineChart } from "./emissionsLineChart";
 
